@@ -31,9 +31,12 @@ public class PatientEntity {
     @Getter @Setter
     private Timestamp updatedAt;
 
+    @Getter @Setter
     @OneToOne
     @JoinColumn(name = "id_user")
     private UserEntity user;
+
+
 
     public PatientEntity() {}
 

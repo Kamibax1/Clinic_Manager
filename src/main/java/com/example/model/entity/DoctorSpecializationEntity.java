@@ -11,19 +11,21 @@ public class DoctorSpecializationEntity {
     @Getter @Setter
     private Long id;
 
+    @Getter @Setter
     @ManyToOne
     @JoinColumn(name = "id_doctor")
     private DoctorEntity doctorEntity;
 
+    @Getter @Setter
     @ManyToOne
     @JoinColumn(name = "id_doctor_specialization")
-    private DoctorSpecializationEntity doctorSpecializationEntity;
+    private SpecializationEntity SpecializationEntity;
 
     public DoctorSpecializationEntity() {}
 
-    public DoctorSpecializationEntity(Long id, DoctorEntity doctorEntity, DoctorSpecializationEntity doctorSpecializationEntity) {
+    public DoctorSpecializationEntity(Long id, DoctorEntity doctorEntity, SpecializationEntity SpecializationEntity) {
         this.id = id;
         this.doctorEntity = doctorEntity;
-        this.doctorSpecializationEntity = doctorSpecializationEntity;
+        this.SpecializationEntity = SpecializationEntity;
     }
 }

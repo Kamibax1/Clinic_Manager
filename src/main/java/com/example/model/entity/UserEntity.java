@@ -25,9 +25,15 @@ public class UserEntity {
     @Getter @Setter
     private Timestamp updatedAt;
 
+    @Getter @Setter
     @ManyToOne
     @JoinColumn(name = "id_role")
     private RoleEntity role;
+
+    @Getter @Setter
+    @OneToOne
+    @JoinColumn(name = "id_History_Appointment")
+    private AppointmentEntity appointment;
 
     public UserEntity(){}
 
