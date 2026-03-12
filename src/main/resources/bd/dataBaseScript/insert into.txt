@@ -1,0 +1,87 @@
+-- insert into
+
+-- Заполнение таблицы role
+INSERT INTO role (id, name)
+VALUES
+    (1, 'ADMIN'),
+    (2, 'DOCTOR'),
+    (3, 'PATIENT');
+
+-- Заполнение таблицы status
+INSERT INTO status (id, status)
+VALUES
+    (1, 'SCHEDULED'),
+    (2, 'CONFIRMED'),
+    (3, 'COMPLETED'),
+    (4, 'CANCELLED'),
+    (5, 'NO_SHOW');
+
+-- Заполнение таблицы specialization
+INSERT INTO specialization (id, name)
+VALUES
+    (1, 'Cardiology'),
+    (2, 'Neurology'),
+    (3, 'Pediatrics'),
+    (4, 'Dermatology'),
+    (5, 'Orthopedics'),
+    (6, 'Ophthalmology'),
+    (7, 'Gynecology'),
+    (8, 'Psychiatry');
+
+-- Заполнение таблицы clinic_user
+INSERT INTO clinic_user (id, email, password, created_at, updated_at, id_role)
+VALUES
+    (1, 'admin@clinic.com', '$2a$10$Hk2zqJqJqJqJqJqJqJqJqO', '2024-01-01 09:00:00', '2024-01-01 09:00:00', 1),
+    (2, 'ivan.petrov@clinic.com', '$2a$10$Hk2zqJqJqJqJqJqJqJqJqO', '2024-01-01 10:00:00', '2024-01-01 10:00:00', 2),
+    (3, 'maria.sidorova@clinic.com', '$2a$10$Hk2zqJqJqJqJqJqJqJqJqO', '2024-01-01 11:00:00', '2024-01-01 11:00:00', 2),
+    (4, 'alex.smirnov@clinic.com', '$2a$10$Hk2zqJqJqJqJqJqJqJqJqO', '2024-01-01 12:00:00', '2024-01-01 12:00:00', 2),
+    (5, 'olga.ivanova@clinic.com', '$2a$10$Hk2zqJqJqJqJqJqJqJqJqO', '2024-01-01 13:00:00', '2024-01-01 13:00:00', 2),
+    (6, 'john.doe@email.com', '$2a$10$Hk2zqJqJqJqJqJqJqJqJqO', '2024-01-02 09:00:00', '2024-01-02 09:00:00', 3),
+    (7, 'jane.smith@email.com', '$2a$10$Hk2zqJqJqJqJqJqJqJqJqO', '2024-01-02 10:00:00', '2024-01-02 10:00:00', 3),
+    (8, 'mike.wilson@email.com', '$2a$10$Hk2zqJqJqJqJqJqJqJqJqO', '2024-01-02 11:00:00', '2024-01-02 11:00:00', 3),
+    (9, 'sarah.brown@email.com', '$2a$10$Hk2zqJqJqJqJqJqJqJqJqO', '2024-01-02 12:00:00', '2024-01-02 12:00:00', 3),
+    (10, 'robert.johnson@email.com', '$2a$10$Hk2zqJqJqJqJqJqJqJqJqO', '2024-01-02 13:00:00', '2024-01-02 13:00:00', 3);
+
+-- Заполнение таблицы doctor
+INSERT INTO doctor (id, first_name, last_name, experience_years, created_at, updated_at, id_user)
+VALUES
+    (1, 'Ivan', 'Petrov', 15, '2024-01-01 10:00:00', '2024-01-01 10:00:00', 2),
+    (2, 'Maria', 'Sidorova', 10, '2024-01-01 11:00:00', '2024-01-01 11:00:00', 3),
+    (3, 'Alex', 'Smirnov', 8, '2024-01-01 12:00:00', '2024-01-01 12:00:00', 4),
+    (4, 'Olga', 'Ivanova', 12, '2024-01-01 13:00:00', '2024-01-01 13:00:00', 5);
+
+-- Заполнение таблицы patient
+INSERT INTO patient (id, full_name, date_of_birth, gender, phone_number, created_at, updated_at, id_user)
+VALUES
+    (1, 'John Doe', '1990-05-15', 'Male', '+1234567890', '2024-01-02 09:00:00', '2024-01-02 09:00:00', 6),
+    (2, 'Jane Smith', '1985-08-22', 'Female', '+1234567891', '2024-01-02 10:00:00', '2024-01-02 10:00:00', 7),
+    (3, 'Mike Wilson', '1978-11-30', 'Male', '+1234567892', '2024-01-02 11:00:00', '2024-01-02 11:00:00', 8),
+    (4, 'Sarah Brown', '1995-03-10', 'Female', '+1234567893', '2024-01-02 12:00:00', '2024-01-02 12:00:00', 9),
+    (5, 'Robert Johnson', '1982-07-19', 'Male', '+1234567894', '2024-01-02 13:00:00', '2024-01-02 13:00:00', 10);
+
+-- Заполнение таблицы doctor_specialization
+-- Связываем докторов с их специализациями
+INSERT INTO doctor_specialization (id, id_doctor, id_doctor_specialization)
+VALUES
+    (1, 1, 1), -- Ivan Petrov - Cardiology
+    (2, 1, 5), -- Ivan Petrov - Orthopedics (дополнительно)
+    (3, 2, 2), -- Maria Sidorova - Neurology
+    (4, 2, 8), -- Maria Sidorova - Psychiatry (дополнительно)
+    (5, 3, 3), -- Alex Smirnov - Pediatrics
+    (6, 3, 4), -- Alex Smirnov - Dermatology (дополнительно)
+    (7, 4, 6), -- Olga Ivanova - Ophthalmology
+    (8, 4, 7); -- Olga Ivanova - Gynecology (дополнительно)
+
+-- Заполнение таблицы appointment
+INSERT INTO appointment (id, appointment_date, symptoms, created_at, updated_at, id_status, id_doctor_specialization, id_patient)
+VALUES
+    (1, '2024-03-15', 'Chest pain, shortness of breath', '2024-03-01 10:00:00', '2024-03-01 10:00:00', 1, 1, 1),
+    (2, '2024-03-16', 'Severe headaches, dizziness', '2024-03-01 11:00:00', '2024-03-01 11:00:00', 2, 3, 2),
+    (3, '2024-03-17', 'High fever, cough', '2024-03-02 09:00:00', '2024-03-02 09:00:00', 1, 5, 3),
+    (4, '2024-03-18', 'Skin rash, itching', '2024-03-02 10:00:00', '2024-03-02 10:00:00', 2, 6, 4),
+    (5, '2024-03-19', 'Joint pain, limited mobility', '2024-03-02 11:00:00', '2024-03-02 11:00:00', 3, 2, 5),
+    (6, '2024-03-20', 'Vision problems, eye strain', '2024-03-03 09:00:00', '2024-03-03 09:00:00', 4, 7, 1),
+    (7, '2024-03-21', 'Irregular heartbeat', '2024-03-03 10:00:00', '2024-03-03 10:00:00', 1, 1, 2),
+    (8, '2024-03-22', 'Memory problems, confusion', '2024-03-03 11:00:00', '2024-03-03 11:00:00', 2, 4, 3),
+    (9, '2024-03-23', 'Stomach pain, nausea', '2024-03-04 09:00:00', '2024-03-04 09:00:00', 5, 5, 4),
+    (10, '2024-03-24', 'Depression, anxiety', '2024-03-04 10:00:00', '2024-03-04 10:00:00', 3, 4, 5);

@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.sql.Timestamp;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "doctor")
@@ -32,6 +34,15 @@ public class DoctorEntity {
     @OneToOne
     @JoinColumn(name = "id_user")
     private UserEntity user;
+
+    @Getter @Setter
+    @ManyToMany
+    @JoinTable(
+            name = "doctor_specialization",
+            joinColumns = @JoinColumn(name = "id_doctor"),
+            inverseJoinColumns = @JoinColumn(name = "id_specialization")
+    )
+    private Set<SpecializationEntity> specializations = new HashSet<>();
 
     public DoctorEntity() {}
 

@@ -32,23 +32,23 @@ public class AppointmentEntity {
     private Timestamp updatedAt;
 
     @ManyToOne
-    @JoinColumn(name = "id_doctor_specialization")
-    private DoctorSpecializationEntity doctorSpecializationEntity;
+    @JoinColumn(name = "id_doctor")
+    private DoctorEntity doctor;
 
     @ManyToOne
     @JoinColumn(name = "id_patient")
-    private PatientEntity patientEntity;
+    private PatientEntity patient;
 
     public AppointmentEntity() {}
 
-    public AppointmentEntity(Long id, LocalDate appointment_date, StatusEntity status, String symptoms, Timestamp createdAt, Timestamp updatedAt, DoctorSpecializationEntity doctorSpecializationEntity, PatientEntity patientEntity) {
+    public AppointmentEntity(Long id, LocalDate appointment_date, StatusEntity status, String symptoms, Timestamp createdAt, Timestamp updatedAt, DoctorEntity doctorEntity, PatientEntity patientEntity) {
         this.id = id;
         this.appointment_date = appointment_date;
         this.status = status;
         this.symptoms = symptoms;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
-        this.doctorSpecializationEntity = doctorSpecializationEntity;
-        this.patientEntity = patientEntity;
+        this.doctor = doctorEntity;
+        this.patient = patientEntity;
     }
 }

@@ -3,8 +3,6 @@ package com.example.service;
 import com.example.model.dto.profile.PatientDataDTO;
 import com.example.model.entity.PatientEntity;
 import com.example.repository.PatientDataRepository;
-import lombok.Getter;
-import lombok.Setter;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
