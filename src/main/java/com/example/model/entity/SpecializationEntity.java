@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Table(name = "specialization")
 public class SpecializationEntity {
@@ -13,6 +16,10 @@ public class SpecializationEntity {
 
     @Getter @Setter
     private String name;
+
+    @Getter @Setter
+    @ManyToMany(mappedBy = "specializations")
+    private Set<DoctorEntity> doctors = new HashSet<>();
 
     public SpecializationEntity() {}
 

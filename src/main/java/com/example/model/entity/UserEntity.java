@@ -30,11 +30,6 @@ public class UserEntity {
     @JoinColumn(name = "id_role")
     private RoleEntity role;
 
-    @Getter @Setter
-    @OneToOne
-    @JoinColumn(name = "id_History_Appointment")
-    private AppointmentEntity appointment;
-
     public UserEntity(){}
 
     public UserEntity(Long id, String email, String password, Timestamp createdAt, Timestamp updatedAt, RoleEntity role) {

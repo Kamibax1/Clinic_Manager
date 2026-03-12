@@ -1,8 +1,11 @@
 package com.example.model.dto;
 
-import com.example.model.entity.DoctorSpecializationEntity;
+import com.example.model.entity.DoctorEntity;
+import com.example.model.entity.SpecializationEntity;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 public class DoctorsDTO {
 
@@ -13,13 +16,15 @@ public class DoctorsDTO {
     private String lastName;
 
     @Getter @Setter
-    private String specialization;
+    private List<String> specialization;
 
-    public static DoctorsDTO fromEntity(DoctorSpecializationEntity doctorSpecializationEntity) {
+    public static DoctorsDTO fromEntity(DoctorEntity doctorEntity) {
         DoctorsDTO doctorsDTO = new DoctorsDTO();
-        doctorsDTO.firstName = doctorSpecializationEntity.getDoctorEntity().getFirstName();
-        doctorsDTO.lastName = doctorSpecializationEntity.getDoctorEntity().getLastName();
-        doctorsDTO.specialization = doctorSpecializationEntity.getSpecializationEntity().getName();
+        doctorsDTO.firstName = doctorEntity.getFirstName();
+        doctorsDTO.lastName = doctorEntity.getLastName();
+        doctorsDTO.specialization = doctorEntity.getSpecializations().stream()
+                .map(SpecializationEntity::getName)
+                .toList();
         return doctorsDTO;
     }
 }
