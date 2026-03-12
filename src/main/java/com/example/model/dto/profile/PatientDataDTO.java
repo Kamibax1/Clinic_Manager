@@ -21,7 +21,7 @@ public class PatientDataDTO {
     @Getter @Setter
     private String email;
 
-    public PatientDataDTO fromEntity(PatientEntity patientEntity) {
+    public static PatientDataDTO fromEntity(PatientEntity patientEntity) {
         PatientDataDTO patientDataDTO = new PatientDataDTO();
         patientDataDTO.fullName = patientEntity.getFullName();
         patientDataDTO.dateOfBirth = patientEntity.getDateOfBirth();
