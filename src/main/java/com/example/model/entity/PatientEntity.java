@@ -36,11 +36,14 @@ public class PatientEntity {
     @JoinColumn(name = "id_user")
     private UserEntity user;
 
-
+    @Getter @Setter
+    @OneToOne
+    @JoinColumn(name = "id_History_Appointment")
+    private AppointmentEntity appointment;
 
     public PatientEntity() {}
 
-    public PatientEntity(Long id, String fullName, String dateOfBirth, String gender, String phoneNumber, Timestamp createdAt, Timestamp updatedAt, UserEntity user) {
+    public PatientEntity(Long id, String fullName, String dateOfBirth, String gender, String phoneNumber, Timestamp createdAt, Timestamp updatedAt, UserEntity user, AppointmentEntity appointment) {
         this.id = id;
         this.fullName = fullName;
         this.dateOfBirth = dateOfBirth;
@@ -49,5 +52,6 @@ public class PatientEntity {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.user = user;
+        this.appointment = appointment;
     }
 }
