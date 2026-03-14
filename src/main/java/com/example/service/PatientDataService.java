@@ -11,7 +11,7 @@ import java.util.Optional;
 @Service
 public class PatientDataService {
 
-    private PatientDataRepository patientDataRepository;
+    private final PatientDataRepository patientDataRepository;
 
     public PatientDataService(PatientDataRepository patientDataRepository) {
         this.patientDataRepository = patientDataRepository;

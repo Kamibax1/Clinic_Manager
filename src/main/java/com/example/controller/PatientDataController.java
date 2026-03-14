@@ -11,7 +11,7 @@ import java.util.List;
 @RequestMapping("/api/data/patients")
 public class PatientDataController {
 
-    private PatientDataService patientDataService;
+    private final PatientDataService patientDataService;
 
     public PatientDataController(PatientDataService patientDataService) {
         this.patientDataService = patientDataService;

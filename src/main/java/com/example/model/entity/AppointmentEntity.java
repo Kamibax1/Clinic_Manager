@@ -18,6 +18,7 @@ public class AppointmentEntity {
     @Getter @Setter
     private LocalDate appointment_date;
 
+    @Getter @Setter
     @ManyToOne
     @JoinColumn(name = "id_status")
     private StatusEntity status;
@@ -31,10 +32,12 @@ public class AppointmentEntity {
     @Getter @Setter
     private Timestamp updatedAt;
 
+    @Getter @Setter
     @ManyToOne
     @JoinColumn(name = "id_doctor")
     private DoctorEntity doctor;
 
+    @Getter @Setter
     @ManyToOne
     @JoinColumn(name = "id_patient")
     private PatientEntity patient;

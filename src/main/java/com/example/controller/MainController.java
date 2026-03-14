@@ -13,7 +13,7 @@ import java.util.List;
 @RequestMapping("/api/main")
 public class MainController {
 
-    private MainService mainService;
+    private final MainService mainService;
 
     public MainController(MainService mainService) {
         this.mainService = mainService;
