@@ -4,6 +4,8 @@ import com.example.model.entity.PatientEntity;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Optional;
+
 public class PatientDataDTO {
 
     @Getter @Setter
@@ -30,5 +32,13 @@ public class PatientDataDTO {
         patientDataDTO.email = patientEntity.getUser().getEmail();
 
         return patientDataDTO;
+    }
+
+
+    public static PatientEntity updateMap(PatientEntity patientEntity, PatientDataDTO patientDataDTO) {
+        patientEntity.setFullName(patientDataDTO.fullName);
+        patientEntity.setDateOfBirth(patientDataDTO.dateOfBirth);
+        patientEntity.setPhoneNumber(patientDataDTO.phoneNumber);
+        return patientEntity;
     }
 }

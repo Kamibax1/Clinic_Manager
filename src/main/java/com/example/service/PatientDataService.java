@@ -24,15 +24,12 @@ public class PatientDataService {
     }
 
     public Optional<PatientDataDTO> update(long id, PatientDataDTO patientDataDTO) {
-        return patientDataRepository.findById(id)
-                .map(existing -> {
-                    existing.setFullName(patientDataDTO.getFullName());
-                    existing.setDateOfBirth(patientDataDTO.getDateOfBirth());
-                    existing.setGender(patientDataDTO.getGender());
-                    existing.setPhoneNumber(patientDataDTO.getPhoneNumber());
 
-                    PatientEntity updated = patientDataRepository.save(existing);
-                    return PatientDataDTO.fromEntity(updated);
-                });
+        if (patientDataRepository.findById(id).isPresent()) {
+            return Optional.of(PatientDataDTO.fromEntity(PatientDataDTO.updateMap(patientDataRepository.save(patientDataRepository.findById(id).get()), patientDataDTO)));
+        }
+        else {
+            return Optional.empty();
+        }
     }
 }
