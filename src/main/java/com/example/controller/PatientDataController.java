@@ -27,7 +27,7 @@ public class PatientDataController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<PatientDataDTO> updateStudent(
+    public ResponseEntity<PatientDataDTO> updatePatient(
             @PathVariable Long id,
             @RequestBody PatientDataDTO newPatientDataDTO) {
         return patientDataService.update(id, newPatientDataDTO)
