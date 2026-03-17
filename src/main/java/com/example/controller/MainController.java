@@ -1,6 +1,6 @@
 package com.example.controller;
 
-import com.example.model.dto.DoctorsDTO;
+import com.example.model.dto.DoctorDTO;
 import com.example.service.MainService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,8 +20,8 @@ public class MainController {
     }
 
     @GetMapping("/doctors")
-    public ResponseEntity<List<DoctorsDTO>> findAllDoctors(){
-        List<DoctorsDTO> doctors = mainService.findAllDoctors();
+    public ResponseEntity<List<DoctorDTO>> findAllDoctors(){
+        List<DoctorDTO> doctors = mainService.findAllDoctors();
         if(doctors.isEmpty()){
             return ResponseEntity.notFound().build();
         }

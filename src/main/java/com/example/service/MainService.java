@@ -1,6 +1,6 @@
 package com.example.service;
 
-import com.example.model.dto.DoctorsDTO;
+import com.example.model.dto.DoctorDTO;
 import com.example.model.entity.SpecializationEntity;
 import com.example.repository.MainRepository;
 import com.example.repository.SpecializationRepository;
@@ -19,9 +19,9 @@ public class MainService {
         this.specializationRepository = specializationRepository;
     }
 
-    public List<DoctorsDTO> findAllDoctors() {
+    public List<DoctorDTO> findAllDoctors() {
         return mainRepository.findAll().stream()
-                .map(DoctorsDTO::fromEntity)
+                .map(DoctorDTO::fromEntity)
                 .toList();
     }
 

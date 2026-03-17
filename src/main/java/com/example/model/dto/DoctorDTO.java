@@ -8,7 +8,7 @@ import lombok.Setter;
 
 import java.util.List;
 
-public class DoctorsDTO {
+public class DoctorDTO {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,13 +24,13 @@ public class DoctorsDTO {
     @Getter @Setter
     private List<String> specialization;
 
-    public static DoctorsDTO fromEntity(DoctorEntity doctorEntity) {
-        DoctorsDTO doctorsDTO = new DoctorsDTO();
-        doctorsDTO.firstName = doctorEntity.getFirstName();
-        doctorsDTO.lastName = doctorEntity.getLastName();
-        doctorsDTO.specialization = doctorEntity.getSpecializations().stream()
+    public static DoctorDTO fromEntity(DoctorEntity doctorEntity) {
+        DoctorDTO doctorDTO = new DoctorDTO();
+        doctorDTO.firstName = doctorEntity.getFirstName();
+        doctorDTO.lastName = doctorEntity.getLastName();
+        doctorDTO.specialization = doctorEntity.getSpecializations().stream()
                 .map(SpecializationEntity::getName)
                 .toList();
-        return doctorsDTO;
+        return doctorDTO;
     }
 }
