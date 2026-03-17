@@ -38,7 +38,6 @@ public class PatientDTO {
         return patientDTO;
     }
 
-
     public static PatientEntity updateMap(PatientEntity patientEntity, PatientDTO patientDTO) {
         patientEntity.setFullName(patientDTO.fullName);
         patientEntity.setDateOfBirth(patientDTO.dateOfBirth);
