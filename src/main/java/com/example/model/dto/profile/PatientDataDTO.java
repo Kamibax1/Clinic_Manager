@@ -4,8 +4,6 @@ import com.example.model.entity.PatientEntity;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Optional;
-
 public class PatientDataDTO {
 
     @Getter @Setter
