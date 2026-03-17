@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.sql.Timestamp;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "appointment")
@@ -16,7 +16,7 @@ public class AppointmentEntity {
     private Long id;
 
     @Getter @Setter
-    private LocalDate appointment_date;
+    private LocalDateTime dateTime;
 
     @Getter @Setter
     @ManyToOne
@@ -44,9 +44,9 @@ public class AppointmentEntity {
 
     public AppointmentEntity() {}
 
-    public AppointmentEntity(Long id, LocalDate appointment_date, StatusEntity status, String symptoms, Timestamp createdAt, Timestamp updatedAt, DoctorEntity doctorEntity, PatientEntity patientEntity) {
+    public AppointmentEntity(Long id, LocalDateTime dateTime, StatusEntity status, String symptoms, Timestamp createdAt, Timestamp updatedAt, DoctorEntity doctorEntity, PatientEntity patientEntity) {
         this.id = id;
-        this.appointment_date = appointment_date;
+        this.dateTime = dateTime;
         this.status = status;
         this.symptoms = symptoms;
         this.createdAt = createdAt;
