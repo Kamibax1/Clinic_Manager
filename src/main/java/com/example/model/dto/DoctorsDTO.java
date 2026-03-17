@@ -2,12 +2,18 @@ package com.example.model.dto;
 
 import com.example.model.entity.DoctorEntity;
 import com.example.model.entity.SpecializationEntity;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
 
 public class DoctorsDTO {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Getter @Setter
+    private Long id;
 
     @Getter @Setter
     private String firstName;

@@ -1,10 +1,16 @@
 package com.example.model.dto.profile;
 
 import com.example.model.entity.PatientEntity;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 public class PatientDataDTO {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Getter @Setter
+    private Long id;
 
     @Getter @Setter
     private String fullName;
