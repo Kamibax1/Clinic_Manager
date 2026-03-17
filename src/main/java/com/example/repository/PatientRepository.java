@@ -1,9 +1,9 @@
 package com.example.repository;
 
-import com.example.model.entity.SpecializationEntity;
+import com.example.model.entity.PatientEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface SpecializationRepository extends JpaRepository<SpecializationEntity, Long> {
+public interface PatientRepository extends JpaRepository<PatientEntity, Long> {
 }

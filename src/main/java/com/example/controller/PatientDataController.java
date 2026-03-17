@@ -1,6 +1,6 @@
 package com.example.controller;
 
-import com.example.model.dto.profile.PatientDataDTO;
+import com.example.model.dto.profile.PatientDTO;
 import com.example.service.PatientDataService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,8 +18,8 @@ public class PatientDataController {
     }
 
     @GetMapping
-    public ResponseEntity<List<PatientDataDTO>> findAllPatients(){
-        List<PatientDataDTO> patients = patientDataService.findAll();
+    public ResponseEntity<List<PatientDTO>> findAllPatients(){
+        List<PatientDTO> patients = patientDataService.findAll();
         if(patients.isEmpty()){
             return ResponseEntity.notFound().build();
         }
@@ -27,10 +27,10 @@ public class PatientDataController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<PatientDataDTO> updatePatient(
+    public ResponseEntity<PatientDTO> updatePatient(
             @PathVariable Long id,
-            @RequestBody PatientDataDTO newPatientDataDTO) {
-        return patientDataService.update(id, newPatientDataDTO)
+            @RequestBody PatientDTO newPatientDTO) {
+        return patientDataService.update(id, newPatientDTO)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
