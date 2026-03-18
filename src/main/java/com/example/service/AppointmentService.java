@@ -1,8 +1,11 @@
 package com.example.service;
 
+import com.example.exception.NotFoundException;
 import com.example.model.dto.AppointmentDTO;
-import com.example.model.dto.AppointmentFunction;
 import com.example.model.entity.AppointmentEntity;
+import com.example.model.entity.DoctorEntity;
+import com.example.model.entity.PatientEntity;
+import com.example.model.entity.StatusEntity;
 import com.example.repository.AppointmentRepository;
 import com.example.repository.DoctorRepository;
 import com.example.repository.PatientRepository;
@@ -28,14 +31,7 @@ public class AppointmentService {
 
     public AppointmentDTO save (AppointmentDTO appointmentDTO) {
         return AppointmentDTO.fromEntity(appointmentRepository
-                .save(AppointmentFunction
-                        .saveOrUpdate(
-                                appointmentDTO,
-                                statusRepository,
-                                patientRepository,
-                                doctorRepository
-                        )
-                )
+                .save(saveOrUpdate(appointmentDTO))
         );
     }
 
@@ -53,15 +49,41 @@ public class AppointmentService {
     public Optional<AppointmentDTO> update(long id, AppointmentDTO  appointmentDTO) {
             Optional<AppointmentEntity> appointmentEntity = appointmentRepository.findById(id);
             return appointmentEntity.map(entity -> AppointmentDTO
-                    .fromEntity(AppointmentFunction
-                            .saveOrUpdate(
-                                    appointmentDTO,
-                                    statusRepository,
-                                    patientRepository,
-                                    doctorRepository
-                            )
-                    )
+                    .fromEntity(saveOrUpdate(appointmentDTO))
             );
+    }
+
+    public void deleteById(long id) {
+        appointmentRepository.deleteById(id);
+    }
+
+    public boolean existsById(long id) {
+        return appointmentRepository.existsById(id);
+    }
+
+    public AppointmentEntity saveOrUpdate(AppointmentDTO appointmentDTO) {
+        Optional<StatusEntity> statusEntity =  statusRepository.findById(appointmentDTO.getId_status());
+        Optional<PatientEntity> patientEntity = patientRepository.findById(appointmentDTO.getId_patient());
+        Optional<DoctorEntity> doctorEntity = doctorRepository.findById(appointmentDTO.getId_doctor());
+
+        if(statusEntity.isEmpty()){
+            throw new NotFoundException("Status not found");
+        }
+        if(patientEntity.isEmpty()){
+            throw new NotFoundException("Patient not found");
+        }
+        if(doctorEntity.isEmpty()){
+            throw new NotFoundException("Doctor not found");
+        }
+
+        else {
+            return AppointmentDTO.fromDTO(
+                    appointmentDTO,
+                    statusEntity.get(),
+                    patientEntity.get(),
+                    doctorEntity.get()
+            );
+        }
     }
 
 }
