@@ -1,8 +1,8 @@
 package com.example.service;
 
-import com.example.model.dto.profile.PatientDataDTO;
+import com.example.model.dto.profile.PatientDTO;
 import com.example.model.entity.PatientEntity;
-import com.example.repository.PatientDataRepository;
+import com.example.repository.PatientRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,25 +11,23 @@ import java.util.Optional;
 @Service
 public class PatientDataService {
 
-    private final PatientDataRepository patientDataRepository;
+    private final PatientRepository patientRepository;
 
-    public PatientDataService(PatientDataRepository patientDataRepository) {
-        this.patientDataRepository = patientDataRepository;
+    public PatientDataService(PatientRepository patientRepository) {
+        this.patientRepository = patientRepository;
     }
 
-    public List<PatientDataDTO> findAll() {
-        return patientDataRepository.findAll().stream()
-                .map(PatientDataDTO::fromEntity)
+    public List<PatientDTO> findAll() {
+        return patientRepository.findAll().stream()
+                .map(PatientDTO::fromEntity)
                 .toList();
     }
 
-    public Optional<PatientDataDTO> update(long id, PatientDataDTO patientDataDTO) {
-
-        if (patientDataRepository.findById(id).isPresent()) {
-            return Optional.of(PatientDataDTO.fromEntity(PatientDataDTO.updateMap(patientDataRepository.save(patientDataRepository.findById(id).get()), patientDataDTO)));
-        }
-        else {
-            return Optional.empty();
-        }
+    public Optional<PatientDTO> update(long id, PatientDTO patientDTO) {
+        Optional<PatientEntity> patientEntity = patientRepository.findById(id);
+        return patientEntity.map(entity -> PatientDTO
+                .fromEntity(PatientDTO
+                        .updateMap(patientRepository
+                                .save(entity), patientDTO)));
     }
 }

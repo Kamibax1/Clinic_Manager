@@ -1,8 +1,8 @@
 package com.example.service;
 
-import com.example.model.dto.DoctorsDTO;
+import com.example.model.dto.DoctorDTO;
 import com.example.model.entity.SpecializationEntity;
-import com.example.repository.MainRepository;
+import com.example.repository.DoctorRepository;
 import com.example.repository.SpecializationRepository;
 import org.springframework.stereotype.Service;
 
@@ -11,17 +11,17 @@ import java.util.List;
 @Service
 public class MainService {
 
-    private final MainRepository mainRepository;
+    private final DoctorRepository doctorRepository;
     private final SpecializationRepository specializationRepository;
 
-    public MainService(MainRepository mainRepository, SpecializationRepository specializationRepository) {
-        this.mainRepository = mainRepository;
+    public MainService(DoctorRepository doctorRepository, SpecializationRepository specializationRepository) {
+        this.doctorRepository = doctorRepository;
         this.specializationRepository = specializationRepository;
     }
 
-    public List<DoctorsDTO> findAllDoctors() {
-        return mainRepository.findAll().stream()
-                .map(DoctorsDTO::fromEntity)
+    public List<DoctorDTO> findAllDoctors() {
+        return doctorRepository.findAll().stream()
+                .map(DoctorDTO::fromEntity)
                 .toList();
     }
 
