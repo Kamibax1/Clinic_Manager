@@ -1,7 +1,6 @@
 package com.example.controller;
 
 import com.example.model.dto.AppointmentDTO;
-import com.example.model.entity.AppointmentEntity;
 import com.example.service.AppointmentService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,7 +12,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/appointments")
 public class AppointmentController {
-    private AppointmentService appointmentService;
+    private final AppointmentService appointmentService;
 
     public AppointmentController(AppointmentService appointmentService) {
         this.appointmentService = appointmentService;

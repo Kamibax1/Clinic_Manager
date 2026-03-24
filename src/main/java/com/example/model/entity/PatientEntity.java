@@ -5,19 +5,21 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
 
 @Entity
-@Table(name = "patient")
+@Table(name = "Patient")
 public class PatientEntity {
     @Id
     @Getter @Setter
+    @Column(name = "id_Patient")
     private Long id;
 
     @Getter @Setter
     private String fullName;
 
     @Getter @Setter
-    private String dateOfBirth;
+    private LocalDate dateOfBirth;
 
     @Getter @Setter
     private String gender;
@@ -36,14 +38,9 @@ public class PatientEntity {
     @JoinColumn(name = "id_user")
     private UserEntity user;
 
-    @Getter @Setter
-    @OneToOne
-    @JoinColumn(name = "id_History_Appointment")
-    private AppointmentEntity appointment;
-
     public PatientEntity() {}
 
-    public PatientEntity(Long id, String fullName, String dateOfBirth, String gender, String phoneNumber, Timestamp createdAt, Timestamp updatedAt, UserEntity user, AppointmentEntity appointment) {
+    public PatientEntity(Long id, String fullName, LocalDate dateOfBirth, String gender, String phoneNumber, Timestamp createdAt, Timestamp updatedAt, UserEntity user) {
         this.id = id;
         this.fullName = fullName;
         this.dateOfBirth = dateOfBirth;
@@ -52,6 +49,5 @@ public class PatientEntity {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.user = user;
-        this.appointment = appointment;
     }
 }

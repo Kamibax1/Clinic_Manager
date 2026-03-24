@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
+
 public class PatientDTO {
 
     @Id
@@ -16,7 +18,7 @@ public class PatientDTO {
     private String fullName;
 
     @Getter @Setter
-    private String dateOfBirth;
+    private LocalDate dateOfBirth;
 
     @Getter @Setter
     private String gender;

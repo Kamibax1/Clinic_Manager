@@ -9,10 +9,11 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "doctor")
+@Table(name = "Doctor")
 public class DoctorEntity {
     @Id
     @Getter @Setter
+    @Column(name = "id_Doctor")
     private Long id;
 
     @Getter @Setter

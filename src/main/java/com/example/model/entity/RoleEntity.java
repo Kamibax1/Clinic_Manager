@@ -6,10 +6,11 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "role")
+@Table(name = "Role")
 public class RoleEntity {
     @Id
     @Getter @Setter
+    @Column(name = "id_Role")
     private Long id;
 
     @Getter @Setter

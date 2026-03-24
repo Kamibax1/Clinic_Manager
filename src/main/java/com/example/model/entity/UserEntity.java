@@ -7,10 +7,11 @@ import lombok.Setter;
 import java.sql.Timestamp;
 
 @Entity
-@Table(name = "clinic_user")
+@Table(name = "Clinic_User")
 public class UserEntity {
     @Id
     @Getter @Setter
+    @Column(name = "id_Clinic_User")
     private Long id;
 
     @Getter @Setter

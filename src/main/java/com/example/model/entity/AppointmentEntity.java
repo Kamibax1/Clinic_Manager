@@ -8,11 +8,11 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "appointment")
+@Table(name = "Appointment")
 public class AppointmentEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Getter @Setter
+    @Column(name = "id_Appointment")
     private Long id;
 
     @Getter @Setter
