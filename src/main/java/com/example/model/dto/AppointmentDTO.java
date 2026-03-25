@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 
 public class AppointmentDTO {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Getter @Setter
     private Long id;
 

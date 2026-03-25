@@ -8,10 +8,11 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "specialization")
+@Table(name = "Specialization")
 public class SpecializationEntity {
     @Id
     @Getter @Setter
+    @Column(name = "id_Specialization")
     private Long id;
 
     @Getter @Setter
