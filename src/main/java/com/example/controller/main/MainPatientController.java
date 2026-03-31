@@ -1,7 +1,7 @@
-package com.example.controller;
+package com.example.controller.main;
 
 import com.example.model.dto.DoctorDTO;
-import com.example.service.MainService;
+import com.example.service.main.MainPatientService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,12 +10,12 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/main")
-public class MainController {
+@RequestMapping("/api/main/patient")
+public class MainPatientController {
 
-    private final MainService mainService;
+    private final MainPatientService mainService;
 
-    public MainController(MainService mainService) {
+    public MainPatientController(MainPatientService mainService) {
         this.mainService = mainService;
     }
 

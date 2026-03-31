@@ -35,7 +35,7 @@ public class PatientEntity {
 
     @Getter @Setter
     @OneToOne
-    @JoinColumn(name = "id_user")
+    @JoinColumn(name = "id_Clinic_User")
     private UserEntity user;
 
     public PatientEntity() {}

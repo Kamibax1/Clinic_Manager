@@ -1,6 +1,6 @@
 package com.example.controller;
 
-import com.example.model.dto.profile.PatientDTO;
+import com.example.model.dto.PatientDTO;
 import com.example.service.PatientDataService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

@@ -28,7 +28,7 @@ public class UserEntity {
 
     @Getter @Setter
     @ManyToOne
-    @JoinColumn(name = "id_role")
+    @JoinColumn(name = "id_Role")
     private RoleEntity role;
 
     public UserEntity(){}

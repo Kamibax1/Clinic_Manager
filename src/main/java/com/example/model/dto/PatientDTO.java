@@ -1,4 +1,4 @@
-package com.example.model.dto.profile;
+package com.example.model.dto;
 
 import com.example.model.entity.PatientEntity;
 import jakarta.persistence.*;
@@ -10,7 +10,6 @@ import java.time.LocalDate;
 public class PatientDTO {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Getter @Setter
     private Long id;
 
@@ -31,6 +30,7 @@ public class PatientDTO {
 
     public static PatientDTO fromEntity(PatientEntity patientEntity) {
         PatientDTO patientDTO = new PatientDTO();
+        patientDTO.setId(patientEntity.getId());
         patientDTO.fullName = patientEntity.getFullName();
         patientDTO.dateOfBirth = patientEntity.getDateOfBirth();
         patientDTO.gender = patientEntity.getGender();

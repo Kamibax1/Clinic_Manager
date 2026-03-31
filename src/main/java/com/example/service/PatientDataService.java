@@ -1,6 +1,6 @@
 package com.example.service;
 
-import com.example.model.dto.profile.PatientDTO;
+import com.example.model.dto.PatientDTO;
 import com.example.model.entity.PatientEntity;
 import com.example.repository.PatientRepository;
 import org.springframework.stereotype.Service;
