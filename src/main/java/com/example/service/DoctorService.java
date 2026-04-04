@@ -1,28 +1,34 @@
-package com.example.service.main;
+package com.example.service;
 
 import com.example.model.dto.DoctorDTO;
+import com.example.model.entity.DoctorEntity;
 import com.example.model.entity.SpecializationEntity;
 import com.example.repository.DoctorRepository;
 import com.example.repository.SpecializationRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
-public class MainPatientService {
-
+public class DoctorService {
     private final DoctorRepository doctorRepository;
     private final SpecializationRepository specializationRepository;
 
-    public MainPatientService(DoctorRepository doctorRepository, SpecializationRepository specializationRepository) {
+    public DoctorService(DoctorRepository doctorRepository, SpecializationRepository specializationRepository) {
         this.doctorRepository = doctorRepository;
         this.specializationRepository = specializationRepository;
     }
 
-    public List<DoctorDTO> findAllDoctors() {
+    public List<DoctorDTO> findAll() {
         return doctorRepository.findAll().stream()
                 .map(DoctorDTO::fromEntity)
                 .toList();
+    }
+
+    public Optional<DoctorDTO> findById(long id) {
+        Optional<DoctorEntity> doctorEntity = doctorRepository.findById(id);
+        return doctorEntity.map(DoctorDTO::fromEntity);
     }
 
     public List<String> findAllSpecializations() {
@@ -30,4 +36,6 @@ public class MainPatientService {
                 .map(SpecializationEntity::getName)
                 .toList();
     }
+
+
 }

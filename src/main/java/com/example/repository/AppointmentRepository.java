@@ -12,9 +12,15 @@ import java.util.Optional;
 
 @Repository
 public interface AppointmentRepository extends JpaRepository<AppointmentEntity,Long> {
-    @Query("SELECT s FROM AppointmentEntity s WHERE s.doctor.getId() = :id")
-    Optional<List<AppointmentEntity>> findAllAppointmentByDoctorId(@Param("id") Long id);
+    @Query("SELECT s FROM AppointmentEntity s WHERE s.doctor.id = :doctorId")
+    Optional<List<AppointmentEntity>> findAllAppointmentByDoctorId(@Param("doctorId") Long id);
 
-    @Query("SELECT s FROM AppointmentEntity s WHERE s.status.getStatus() = :status")
+    @Query("SELECT s FROM AppointmentEntity s WHERE s.status.status = :status")
     Optional<List<AppointmentEntity>> findAllAppointmentByStatus(@Param("status") StatusEnum status);
+
+    @Query("SELECT a FROM AppointmentEntity a " +
+            "JOIN FETCH a.patient " +
+            "JOIN FETCH a.doctor " +
+            "JOIN FETCH a.status")
+    List<AppointmentEntity> findAllFull();
 }

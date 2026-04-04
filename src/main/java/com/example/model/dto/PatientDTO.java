@@ -1,6 +1,7 @@
 package com.example.model.dto;
 
 import com.example.model.entity.PatientEntity;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -8,21 +9,24 @@ import lombok.Setter;
 import java.time.LocalDate;
 
 public class PatientDTO {
-
     @Id
     @Getter @Setter
+    @JsonProperty("id_patient")
     private Long id;
 
     @Getter @Setter
+    @JsonProperty("full_name")
     private String fullName;
 
     @Getter @Setter
+    @JsonProperty("date_of_birth")
     private LocalDate dateOfBirth;
 
     @Getter @Setter
     private String gender;
 
     @Getter @Setter
+    @JsonProperty("phone_number")
     private String phoneNumber;
 
     @Getter @Setter
