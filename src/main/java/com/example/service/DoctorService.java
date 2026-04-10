@@ -6,6 +6,7 @@ import com.example.model.entity.SpecializationEntity;
 import com.example.repository.DoctorRepository;
 import com.example.repository.SpecializationRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,9 +27,18 @@ public class DoctorService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
     public Optional<DoctorDTO> findById(long id) {
         Optional<DoctorEntity> doctorEntity = doctorRepository.findById(id);
         return doctorEntity.map(DoctorDTO::fromEntity);
+    }
+
+    @Transactional(readOnly = true)
+    public List<DoctorDTO> searchByName(String partName){
+        List<DoctorEntity> doctors = doctorRepository.searchByName(partName);
+        return doctors.stream()
+                .map(DoctorDTO::fromEntity)
+                .toList();
     }
 
     public List<String> findAllSpecializations() {

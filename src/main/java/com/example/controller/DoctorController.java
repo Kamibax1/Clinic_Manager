@@ -32,6 +32,12 @@ public class DoctorController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/search/{partName}")
+    public ResponseEntity<List<DoctorDTO>> findByName(@PathVariable String partName){
+        List<DoctorDTO> doctors = doctorService.searchByName(partName);
+        return ResponseEntity.ok(doctors);
+    }
+
     @GetMapping("/specializations")
     public ResponseEntity<List<String>> findAllSpecialization(){
         List<String> specializations = doctorService.findAllSpecializations();

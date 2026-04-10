@@ -4,6 +4,7 @@ import com.example.model.dto.PatientDTO;
 import com.example.model.entity.PatientEntity;
 import com.example.repository.PatientRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,18 +24,21 @@ public class PatientService {
                 .toList();
     }
 
+    @Transactional
     public Optional<PatientDTO> findById(long id) {
         Optional<PatientEntity> patientEntity = patientRepository.findById(id);
         return patientEntity.map(PatientDTO::fromEntity);
     }
 
-    public Optional<List<PatientDTO>> findByPartFullName(String partFullName){
-        Optional<List<PatientEntity>> patients = patientRepository.searchByFullName(partFullName);
-        return patients.map(list -> list.stream()
+    @Transactional(readOnly = true)
+    public List<PatientDTO> findByPartFullName(String partFullName){
+        List<PatientEntity> patients = patientRepository.findByFullNameContainingIgnoreCase(partFullName);
+        return patients.stream()
                 .map(PatientDTO::fromEntity)
-                .toList());
+                .toList();
     }
 
+    @Transactional
     public Optional<PatientDTO> update(long id, PatientDTO patientDTO) {
         Optional<PatientEntity> patientEntity = patientRepository.findById(id);
         return patientEntity.map(entity -> {

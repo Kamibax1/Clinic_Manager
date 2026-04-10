@@ -2,6 +2,7 @@ package com.example.service;
 
 import com.example.model.entity.StatusEntity;
 import com.example.repository.StatusRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,6 +16,7 @@ public class StatusService {
         this.statusRepository = statusRepository;
     }
 
+    @Transactional
     public Optional<StatusEntity> findById(Long id) {
         return statusRepository.findById(id);
     }

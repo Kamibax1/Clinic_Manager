@@ -27,7 +27,7 @@ public class UserEntity {
     private Timestamp updatedAt;
 
     @Getter @Setter
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_Role")
     private RoleEntity role;
 

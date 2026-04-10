@@ -35,9 +35,8 @@ public class PatientController {
 
     @GetMapping("/search/{partFullName}")
     public ResponseEntity<List<PatientDTO>> findByPartFullName(@PathVariable String partFullName){
-        return patientService.findByPartFullName(partFullName)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        List<PatientDTO> patients = patientService.findByPartFullName(partFullName);
+        return ResponseEntity.ok(patients);
     }
 
     @PutMapping("/{id}")

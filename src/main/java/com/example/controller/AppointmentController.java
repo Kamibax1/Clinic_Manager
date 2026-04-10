@@ -77,16 +77,20 @@ public class AppointmentController {
     }
 
     @GetMapping("/find/doctor/{id}")
-    public ResponseEntity<List<AppointmentDTO>> findAllByDoctorId(@PathVariable Long id){
-        return appointmentService.findAllByDoctorId(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<List<AppointmentDTO>> findAllByDoctorId(@PathVariable Long id) {
+        List<AppointmentDTO> appointments = appointmentService.findAllByDoctorId(id);
+        return ResponseEntity.ok(appointments);
     }
 
     @GetMapping("/find/status/{status}")
-    public ResponseEntity<List<AppointmentDTO>> findAllByStatus(@PathVariable StatusEnum status){
-        return appointmentService.findAllByStatus(status)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<List<AppointmentDTO>> findAllByStatus(@PathVariable StatusEnum status) {
+        List<AppointmentDTO> appointments = appointmentService.findAllByStatus(status);
+        return ResponseEntity.ok(appointments);
+    }
+
+    @GetMapping("/full/search/doctor/{doctorName}")
+    public ResponseEntity<List<AppointmentFullDTO>> findAllByDoctorName(@PathVariable String doctorName) {
+        List<AppointmentFullDTO> appointments = appointmentService.findAllByDoctorName(doctorName);
+        return ResponseEntity.ok(appointments);
     }
 }

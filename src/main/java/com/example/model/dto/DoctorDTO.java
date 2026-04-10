@@ -23,6 +23,10 @@ public class DoctorDTO {
     @Getter @Setter
     private String lastName;
 
+    @JsonProperty("experience_years")
+    @Getter @Setter
+    private int experienceYears;
+
     @Getter @Setter
     private List<String> specialization;
 
@@ -31,6 +35,7 @@ public class DoctorDTO {
         doctorDTO.id = doctorEntity.getId();
         doctorDTO.firstName = doctorEntity.getFirstName();
         doctorDTO.lastName = doctorEntity.getLastName();
+        doctorDTO.experienceYears = doctorEntity.getExperienceYears();
         doctorDTO.specialization = doctorEntity.getSpecializations().stream()
                 .map(SpecializationEntity::getName)
                 .toList();

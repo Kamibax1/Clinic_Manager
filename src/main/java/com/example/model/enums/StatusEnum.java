@@ -4,6 +4,5 @@ public enum StatusEnum {
     SCHEDULED,
     CONFIRMED,
     COMPLETED,
-    CANCELLED,
-    NO_SHOW
+    CANCELLED
 }

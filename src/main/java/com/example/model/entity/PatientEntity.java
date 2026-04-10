@@ -34,7 +34,7 @@ public class PatientEntity {
     private Timestamp updatedAt;
 
     @Getter @Setter
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_Clinic_User")
     private UserEntity user;
 

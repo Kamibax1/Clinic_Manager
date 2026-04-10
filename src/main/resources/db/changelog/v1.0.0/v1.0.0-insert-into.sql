@@ -90,8 +90,7 @@ INSERT INTO Status (id_Status, status) VALUES
 (1, 'SCHEDULED'),
 (2, 'CONFIRMED'),
 (3, 'COMPLETED'),
-(4, 'CANCELLED'),
-(5, 'NO_SHOW');
+(4, 'CANCELLED');
 
 -- ==========================================
 -- Заполнение таблицы Appointment (записи на прием)

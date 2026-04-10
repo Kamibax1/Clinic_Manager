@@ -33,12 +33,12 @@ public class AppointmentEntity {
     private Timestamp updatedAt;
 
     @Getter @Setter
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_doctor")
     private DoctorEntity doctor;
 
     @Getter @Setter
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_patient")
     private PatientEntity patient;
 

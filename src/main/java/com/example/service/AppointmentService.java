@@ -13,6 +13,7 @@ import com.example.repository.DoctorRepository;
 import com.example.repository.PatientRepository;
 import com.example.repository.StatusRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -31,10 +32,12 @@ public class AppointmentService {
         this.doctorRepository = doctorRepository;
     }
 
+    @Transactional
     public AppointmentDTO save (AppointmentDTO appointmentDTO) {
-        return AppointmentDTO.fromEntity(appointmentRepository.save(saveOrUpdate(appointmentDTO)));
+        return AppointmentDTO.fromEntity(appointmentRepository.save(convertToEntity(appointmentDTO)));
     }
 
+    @Transactional(readOnly = true)
     public List<AppointmentDTO> findAll() {
         return appointmentRepository.findAll().stream()
                 .map(AppointmentDTO::fromEntity)
@@ -47,16 +50,18 @@ public class AppointmentService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
     public Optional<AppointmentDTO> findById(long id) {
         return appointmentRepository.findById(id)
                 .map(AppointmentDTO::fromEntity);
     }
 
+    @Transactional(readOnly = true)
     public Optional<AppointmentDTO> update(Long id, AppointmentDTO appointmentDTO) {
         if (!appointmentRepository.existsById(id)) {
             return Optional.empty();
         }
-        AppointmentEntity entity = saveOrUpdate(appointmentDTO);
+        AppointmentEntity entity = convertToEntity(appointmentDTO);
         entity.setId(id);
         return Optional.of(AppointmentDTO.fromEntity(appointmentRepository.save(entity)));
     }
@@ -69,44 +74,40 @@ public class AppointmentService {
         return appointmentRepository.existsById(id);
     }
 
-    public AppointmentEntity saveOrUpdate(AppointmentDTO appointmentDTO) {
-        Optional<StatusEntity> statusEntity =  statusRepository.findById(appointmentDTO.getId_status());
-        Optional<PatientEntity> patientEntity = patientRepository.findById(appointmentDTO.getId_patient());
-        Optional<DoctorEntity> doctorEntity = doctorRepository.findById(appointmentDTO.getId_doctor());
+    private AppointmentEntity convertToEntity(AppointmentDTO dto) {
+        StatusEntity status = statusRepository.findById(dto.getId_status())
+                .orElseThrow(() -> new NotFoundException("Status not found with id: " + dto.getId_status()));
 
-        if(statusEntity.isEmpty()){
-            throw new NotFoundException("Status not found");
-        }
-        if(patientEntity.isEmpty()){
-            throw new NotFoundException("Patient not found");
-        }
-        if(doctorEntity.isEmpty()){
-            throw new NotFoundException("Doctor not found");
-        }
+        PatientEntity patient = patientRepository.findById(dto.getId_patient())
+                .orElseThrow(() -> new NotFoundException("Patient not found with id: " + dto.getId_patient()));
 
-        else {
-            return AppointmentDTO.toEntity(
-                    appointmentDTO,
-                    statusEntity.get(),
-                    patientEntity.get(),
-                    doctorEntity.get()
-            );
-        }
+        DoctorEntity doctor = doctorRepository.findById(dto.getId_doctor())
+                .orElseThrow(() -> new NotFoundException("Doctor not found with id: " + dto.getId_doctor()));
+
+        return AppointmentDTO.toEntity(dto, status, patient, doctor);
     }
 
-    public Optional<List<AppointmentDTO>> findAllByDoctorId(long id){
-        Optional<List<AppointmentEntity>> appointments = appointmentRepository.findAllAppointmentByDoctorId(id);
-        return Optional.of(appointments.stream()
-                .flatMap(List::stream)
+    @Transactional(readOnly = true)
+    public List<AppointmentDTO> findAllByDoctorId(long id) {
+        List<AppointmentEntity> appointments = appointmentRepository.findAllByDoctorId(id);
+        return appointments.stream()
                 .map(AppointmentDTO::fromEntity)
-                .toList());
+                .toList();
     }
 
-    public Optional<List<AppointmentDTO>> findAllByStatus(StatusEnum status){
-        Optional<List<AppointmentEntity>> appointments = appointmentRepository.findAllAppointmentByStatus(status);
-        return Optional.of(appointments.stream()
-                .flatMap(List::stream)
+    @Transactional(readOnly = true)
+    public List<AppointmentDTO> findAllByStatus(StatusEnum status) {
+        List<AppointmentEntity> appointments = appointmentRepository.findAllByStatusStatus(status);
+        return appointments.stream()
                 .map(AppointmentDTO::fromEntity)
-                .toList());
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<AppointmentFullDTO> findAllByDoctorName(String doctorName) {
+        List<AppointmentEntity> appointments = appointmentRepository.findAllByDoctorName(doctorName);
+        return appointments.stream()
+                .map(AppointmentFullDTO::fromEntity)
+                .toList();
     }
 }
