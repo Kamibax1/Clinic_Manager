@@ -32,12 +32,12 @@ public class DoctorEntity {
     private Timestamp updatedAt;
 
     @Getter @Setter
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_user")
     private UserEntity user;
 
     @Getter @Setter
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "doctor_specialization",
             joinColumns = @JoinColumn(name = "id_doctor"),

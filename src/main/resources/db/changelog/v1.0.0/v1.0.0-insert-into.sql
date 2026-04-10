@@ -2,9 +2,9 @@
 -- Заполнение таблицы Role (роли)
 -- ==========================================
 INSERT INTO Role (id_Role, name) VALUES
-(1, 'admin'),
-(2, 'doctor'),
-(3, 'patient');
+(1, 'ADMIN'),
+(2, 'DOCTOR'),
+(3, 'PATIENT');
 
 -- ==========================================
 -- Заполнение таблицы Clinic_User (пользователи клиники)
@@ -90,8 +90,7 @@ INSERT INTO Status (id_Status, status) VALUES
 (1, 'SCHEDULED'),
 (2, 'CONFIRMED'),
 (3, 'COMPLETED'),
-(4, 'CANCELLED'),
-(5, 'NO_SHOW');
+(4, 'CANCELLED');
 
 -- ==========================================
 -- Заполнение таблицы Appointment (записи на прием)

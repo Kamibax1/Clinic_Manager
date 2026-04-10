@@ -19,7 +19,7 @@ public class SpecializationEntity {
     private String name;
 
     @Getter @Setter
-    @ManyToMany(mappedBy = "specializations")
+    @ManyToMany(mappedBy = "specializations", fetch = FetchType.LAZY)
     private Set<DoctorEntity> doctors = new HashSet<>();
 
     public SpecializationEntity() {}

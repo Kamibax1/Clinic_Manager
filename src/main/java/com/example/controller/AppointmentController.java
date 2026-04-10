@@ -1,6 +1,8 @@
 package com.example.controller;
 
 import com.example.model.dto.AppointmentDTO;
+import com.example.model.dto.AppointmentFullDTO;
+import com.example.model.enums.StatusEnum;
 import com.example.service.AppointmentService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -43,6 +45,12 @@ public class AppointmentController {
         return ResponseEntity.ok().body(list);
     }
 
+    @GetMapping("/full")
+    public ResponseEntity<List<AppointmentFullDTO>> findAllFull() {
+        List<AppointmentFullDTO> list = appointmentService.findAllFull();
+        return list.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(list);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<AppointmentDTO> findById(@PathVariable Long id) {
         return appointmentService.findById(id)
@@ -66,5 +74,23 @@ public class AppointmentController {
         else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @GetMapping("/find/doctor/{id}")
+    public ResponseEntity<List<AppointmentDTO>> findAllByDoctorId(@PathVariable Long id) {
+        List<AppointmentDTO> appointments = appointmentService.findAllByDoctorId(id);
+        return ResponseEntity.ok(appointments);
+    }
+
+    @GetMapping("/find/status/{status}")
+    public ResponseEntity<List<AppointmentDTO>> findAllByStatus(@PathVariable StatusEnum status) {
+        List<AppointmentDTO> appointments = appointmentService.findAllByStatus(status);
+        return ResponseEntity.ok(appointments);
+    }
+
+    @GetMapping("/full/search/doctor/{doctorName}")
+    public ResponseEntity<List<AppointmentFullDTO>> findAllByDoctorName(@PathVariable String doctorName) {
+        List<AppointmentFullDTO> appointments = appointmentService.findAllByDoctorName(doctorName);
+        return ResponseEntity.ok(appointments);
     }
 }
