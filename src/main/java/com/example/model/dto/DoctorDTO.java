@@ -7,7 +7,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class DoctorDTO {
     @Id
@@ -28,7 +29,8 @@ public class DoctorDTO {
     private int experienceYears;
 
     @Getter @Setter
-    private List<String> specialization;
+    @JsonProperty("specializations")
+    private Set<SpecializationDTO> specializations;
 
     public static DoctorDTO fromEntity(DoctorEntity doctorEntity) {
         DoctorDTO doctorDTO = new DoctorDTO();
@@ -36,9 +38,23 @@ public class DoctorDTO {
         doctorDTO.firstName = doctorEntity.getFirstName();
         doctorDTO.lastName = doctorEntity.getLastName();
         doctorDTO.experienceYears = doctorEntity.getExperienceYears();
-        doctorDTO.specialization = doctorEntity.getSpecializations().stream()
-                .map(SpecializationEntity::getName)
-                .toList();
+
+        doctorDTO.specializations = doctorEntity.getSpecializations().stream()
+                .map(SpecializationDTO::fromEntity)
+                .collect(Collectors.toSet());
         return doctorDTO;
+    }
+
+    public static DoctorEntity toEntity(DoctorDTO dto) {
+        DoctorEntity entity = new DoctorEntity();
+        entity.setId(dto.id);
+        entity.setFirstName(dto.firstName);
+        entity.setLastName(dto.lastName);
+        entity.setExperienceYears(dto.experienceYears);
+        entity.setSpecializations(dto.specializations.stream()
+                .map(SpecializationDTO::toEntity)
+                .collect(Collectors.toSet())
+        );
+        return entity;
     }
 }

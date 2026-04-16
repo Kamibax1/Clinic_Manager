@@ -3,6 +3,8 @@ package com.example.service;
 import com.example.exception.NotFoundException;
 import com.example.model.dto.AppointmentDTO;
 import com.example.model.dto.AppointmentFullDTO;
+import com.example.model.dto.AppointmentInformationDTO;
+import com.example.model.dto.CreateAppointmentRequest;
 import com.example.model.entity.AppointmentEntity;
 import com.example.model.entity.DoctorEntity;
 import com.example.model.entity.PatientEntity;
@@ -44,6 +46,7 @@ public class AppointmentService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
     public List<AppointmentFullDTO> findAllFull() {
         return appointmentRepository.findAllFull().stream()
                 .map(AppointmentFullDTO::fromEntity)
@@ -109,5 +112,27 @@ public class AppointmentService {
         return appointments.stream()
                 .map(AppointmentFullDTO::fromEntity)
                 .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<AppointmentInformationDTO> findAppointmentInformationById(long id) {
+        return appointmentRepository.findInformationById(id)
+                .map(AppointmentInformationDTO::fromEntity);
+    }
+
+    @Transactional
+    public Optional<AppointmentInformationDTO> updateStatus(long id, StatusEnum status) {
+        return appointmentRepository.findById(id).map(appointment -> {
+            StatusEntity newStatus = statusRepository.findByStatus(status);
+            appointment.setStatus(newStatus);
+            appointmentRepository.save(appointment);
+
+            return AppointmentInformationDTO.fromEntity(appointment);
+        });
+    }
+
+    @Transactional
+    public CreateAppointmentRequest createAppointment(CreateAppointmentRequest appointment) {
+        return CreateAppointmentRequest.fromEntity(appointmentRepository.save(CreateAppointmentRequest.toEntity(appointment)));
     }
 }

@@ -50,4 +50,15 @@ public class PatientDTO {
         patientEntity.setPhoneNumber(patientDTO.phoneNumber);
         return patientEntity;
     }
+
+    public static PatientEntity toEntity(PatientDTO dto) {
+        PatientEntity entity = new PatientEntity();
+        entity.setId(dto.id);
+        entity.setFullName(dto.fullName);
+        entity.setDateOfBirth(dto.dateOfBirth);
+        entity.setGender(dto.gender);
+        entity.setPhoneNumber(dto.phoneNumber);
+        entity.getUser().setEmail(dto.email);
+        return entity;
+    }
 }

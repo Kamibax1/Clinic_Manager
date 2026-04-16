@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface AppointmentRepository extends JpaRepository<AppointmentEntity,Long> {
@@ -26,4 +27,11 @@ public interface AppointmentRepository extends JpaRepository<AppointmentEntity,L
             "JOIN FETCH a.doctor " +
             "JOIN FETCH a.status")
     List<AppointmentEntity> findAllFull();
+
+    @Query("SELECT a FROM AppointmentEntity a " +
+            "JOIN FETCH a.patient " +
+            "JOIN FETCH a.doctor " +
+            "JOIN FETCH a.status " +
+            "WHERE a.id = :id")
+    Optional<AppointmentEntity> findInformationById(@Param("id") Long id);
 }

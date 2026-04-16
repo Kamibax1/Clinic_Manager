@@ -1,7 +1,6 @@
 package com.example.controller;
 
-import com.example.model.dto.AppointmentDTO;
-import com.example.model.dto.AppointmentFullDTO;
+import com.example.model.dto.*;
 import com.example.model.enums.StatusEnum;
 import com.example.service.AppointmentService;
 import org.springframework.http.ResponseEntity;
@@ -21,9 +20,9 @@ public class AppointmentController {
     }
 
     @PostMapping
-    public ResponseEntity<AppointmentDTO> save(@RequestBody AppointmentDTO appointmentDTO) {
+    public ResponseEntity<CreateAppointmentRequest> save(@RequestBody CreateAppointmentRequest dto) {
 
-        AppointmentDTO created =  appointmentService.save(appointmentDTO);
+        CreateAppointmentRequest created = appointmentService.createAppointment(dto);
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
@@ -92,5 +91,23 @@ public class AppointmentController {
     public ResponseEntity<List<AppointmentFullDTO>> findAllByDoctorName(@PathVariable String doctorName) {
         List<AppointmentFullDTO> appointments = appointmentService.findAllByDoctorName(doctorName);
         return ResponseEntity.ok(appointments);
+    }
+
+    @GetMapping("/information/{id}")
+    public ResponseEntity<AppointmentInformationDTO> findInformationById(@PathVariable Long id) {
+        return appointmentService.findAppointmentInformationById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PutMapping("/information/{id}")
+    public ResponseEntity<AppointmentInformationDTO> updateStatus(
+            @PathVariable Long id,
+            @RequestBody StatusEnum status
+    ) {
+
+        return appointmentService.updateStatus(id, status)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 }
