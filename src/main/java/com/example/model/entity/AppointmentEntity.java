@@ -5,7 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Entity
 @Table(name = "Appointment")
@@ -16,12 +17,10 @@ public class AppointmentEntity {
     private Long id;
 
     @Getter @Setter
-    private LocalDateTime dateTime;
+    private LocalDate date;
 
     @Getter @Setter
-    @ManyToOne
-    @JoinColumn(name = "id_status")
-    private StatusEntity status;
+    private LocalTime time;
 
     @Getter @Setter
     private String symptoms;
@@ -33,25 +32,31 @@ public class AppointmentEntity {
     private Timestamp updatedAt;
 
     @Getter @Setter
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_doctor")
-    private DoctorEntity doctor;
+    @ManyToOne
+    @JoinColumn(name = "id_status")
+    private StatusEntity status;
 
     @Getter @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_patient")
     private PatientEntity patient;
 
+    @Getter @Setter
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_doctor")
+    private DoctorEntity doctor;
+
     public AppointmentEntity() {}
 
-    public AppointmentEntity(Long id, LocalDateTime dateTime, StatusEntity status, String symptoms, Timestamp createdAt, Timestamp updatedAt, DoctorEntity doctorEntity, PatientEntity patientEntity) {
+    public AppointmentEntity(Long id, LocalDate date, LocalTime time, String symptoms, Timestamp createdAt, Timestamp updatedAt, StatusEntity status, PatientEntity patient, DoctorEntity doctor) {
         this.id = id;
-        this.dateTime = dateTime;
-        this.status = status;
+        this.date = date;
+        this.time = time;
         this.symptoms = symptoms;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
-        this.doctor = doctorEntity;
-        this.patient = patientEntity;
+        this.status = status;
+        this.patient = patient;
+        this.doctor = doctor;
     }
 }

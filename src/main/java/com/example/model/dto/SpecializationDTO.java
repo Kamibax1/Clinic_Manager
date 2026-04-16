@@ -1,13 +1,15 @@
 package com.example.model.dto;
 
 import com.example.model.entity.SpecializationEntity;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.Setter;
 
 public class SpecializationDTO {
-    @Getter @Setter
     @Id
+    @Getter @Setter
+    @JsonProperty("id_specialization")
     private Long id;
 
     @Getter @Setter

@@ -18,6 +18,9 @@ public class UserEntity {
     private String email;
 
     @Getter @Setter
+    private String username;
+
+    @Getter @Setter
     private String password;
 
     @Getter @Setter
@@ -33,9 +36,10 @@ public class UserEntity {
 
     public UserEntity(){}
 
-    public UserEntity(Long id, String email, String password, Timestamp createdAt, Timestamp updatedAt, RoleEntity role) {
+    public UserEntity(Long id, String email, String username, String password, Timestamp createdAt, Timestamp updatedAt, RoleEntity role) {
         this.id = id;
         this.email = email;
+        this.username = username;
         this.password = password;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;

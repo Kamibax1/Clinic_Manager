@@ -1,6 +1,6 @@
 package com.example.controller;
 
-import com.example.model.entity.StatusEntity;
+import com.example.model.dto.StatusDTO;
 import com.example.service.StatusService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,8 +17,8 @@ public class StatusController {
     }
 
     @GetMapping
-    public ResponseEntity<List<StatusEntity>> findAll(){
-        List<StatusEntity> statusEntities = statusService.findAll();
+    public ResponseEntity<List<StatusDTO>> findAll(){
+        List<StatusDTO> statusEntities = statusService.findAll();
         if(statusEntities.isEmpty()){
             return ResponseEntity.notFound().build();
         }
@@ -26,7 +26,7 @@ public class StatusController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<StatusEntity> findById(@PathVariable long id) {
+    public ResponseEntity<StatusDTO> findById(@PathVariable long id) {
         return statusService.findById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());

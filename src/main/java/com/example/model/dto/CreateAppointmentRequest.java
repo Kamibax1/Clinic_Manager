@@ -7,7 +7,8 @@ import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 public class CreateAppointmentRequest {
     @Id
@@ -16,17 +17,19 @@ public class CreateAppointmentRequest {
     private Long id;
 
     @Getter @Setter
-    @JsonProperty("date_time")
-    private LocalDateTime dateTime;
+    private LocalDate date;
+
+    @Getter @Setter
+    private LocalTime time;
 
     @Getter @Setter
     private String symptoms;
 
     @Getter @Setter
-    private PatientDTO patient;
+    private PatientShortInfoResponse patient;
 
     @Getter @Setter
-    private DoctorDTO doctor;
+    private DoctorShortInfoResponse doctor;
 
     @Getter @Setter
     private StatusEntity status;
@@ -34,9 +37,10 @@ public class CreateAppointmentRequest {
     public CreateAppointmentRequest() {
     }
 
-    public CreateAppointmentRequest(Long id, LocalDateTime dateTime, String symptoms, PatientDTO patient, DoctorDTO doctor, StatusEntity status) {
+    public CreateAppointmentRequest(Long id, LocalDate date, LocalTime time, String symptoms, PatientShortInfoResponse patient, DoctorShortInfoResponse doctor, StatusEntity status) {
         this.id = id;
-        this.dateTime = dateTime;
+        this.date = date;
+        this.time = time;
         this.symptoms = symptoms;
         this.patient = patient;
         this.doctor = doctor;
@@ -46,10 +50,11 @@ public class CreateAppointmentRequest {
     public static CreateAppointmentRequest fromEntity(AppointmentEntity entity) {
         CreateAppointmentRequest dto = new CreateAppointmentRequest();
         dto.setId(entity.getId());
-        dto.dateTime = entity.getDateTime();
+        dto.date = entity.getDate();
+        dto.time = entity.getTime();
         dto.symptoms = entity.getSymptoms();
-        dto.patient = PatientDTO.fromEntity(entity.getPatient());
-        dto.doctor = DoctorDTO.fromEntity(entity.getDoctor());
+        dto.patient = PatientShortInfoResponse.fromEntity(entity.getPatient());
+        dto.doctor = DoctorShortInfoResponse.fromEntity(entity.getDoctor());
         dto.status = entity.getStatus();
         return dto;
     }
@@ -57,10 +62,11 @@ public class CreateAppointmentRequest {
     public static AppointmentEntity toEntity(CreateAppointmentRequest dto) {
         AppointmentEntity entity = new AppointmentEntity();
         entity.setId(dto.getId());
-        entity.setDateTime(dto.dateTime);
+        entity.setDate(dto.getDate());
+        entity.setTime(dto.getTime());
         entity.setSymptoms(dto.symptoms);
-        entity.setPatient(PatientDTO.toEntity(dto.patient));
-        entity.setDoctor(DoctorDTO.toEntity(dto.doctor));
+        entity.setPatient(PatientShortInfoResponse.toEntity(dto.getPatient()));
+        entity.setDoctor(DoctorShortInfoResponse.toEntity(dto.getDoctor()));
         entity.setStatus(dto.status);
         return entity;
     }

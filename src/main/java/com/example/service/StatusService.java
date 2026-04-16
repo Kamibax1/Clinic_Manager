@@ -1,5 +1,6 @@
 package com.example.service;
 
+import com.example.model.dto.StatusDTO;
 import com.example.model.entity.StatusEntity;
 import com.example.repository.StatusRepository;
 import jakarta.transaction.Transactional;
@@ -17,11 +18,13 @@ public class StatusService {
     }
 
     @Transactional
-    public Optional<StatusEntity> findById(Long id) {
-        return statusRepository.findById(id);
+    public Optional<StatusDTO> findById(Long id) {
+        return statusRepository.findById(id).map(StatusDTO::fromEntity);
     }
 
-    public List<StatusEntity> findAll() {
-        return statusRepository.findAll();
+    public List<StatusDTO> findAll() {
+        return statusRepository.findAll().stream()
+                .map(StatusDTO::fromEntity)
+                .toList();
     }
 }

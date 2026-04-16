@@ -22,10 +22,10 @@ public class CreateAppointmentResponse {
     private String symptoms;
 
     @Getter @Setter
-    private PatientDTO patient;
+    private PatientShortInfoResponse patient;
 
     @Getter @Setter
-    private DoctorDTO doctor;
+    private DoctorShortInfoResponse doctor;
 
     @Getter @Setter
     private StatusEntity status;
@@ -33,7 +33,7 @@ public class CreateAppointmentResponse {
     public CreateAppointmentResponse() {
     }
 
-    public CreateAppointmentResponse(Long id, LocalDateTime dateTime, String symptoms, PatientDTO patient, DoctorDTO doctor, StatusEntity status) {
+    public CreateAppointmentResponse(Long id, LocalDateTime dateTime, String symptoms, PatientShortInfoResponse patient, DoctorShortInfoResponse doctor, StatusEntity status) {
         this.id = id;
         this.dateTime = dateTime;
         this.symptoms = symptoms;

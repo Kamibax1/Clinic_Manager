@@ -6,6 +6,7 @@ CREATE TABLE Role (
 CREATE TABLE Clinic_User (
     id_Clinic_User BIGINT PRIMARY KEY,
     email VARCHAR(255),
+    nickname VARCHAR(255),
     password VARCHAR(255),
     created_at TIMESTAMP,
     updated_at TIMESTAMP,
@@ -16,10 +17,12 @@ CREATE TABLE Doctor (
     id_Doctor BIGINT PRIMARY KEY,
     first_name VARCHAR(255),
     last_name VARCHAR(255),
+    middle_name VARCHAR(255),
+    phone_number VARCHAR(255),
     experience_years INT,
     created_at TIMESTAMP,
     updated_at TIMESTAMP,
-    id_Clinic_User BIGINT NOT NULL REFERENCES Clinic_User (id_Clinic_User)
+    id_User BIGINT NOT NULL REFERENCES Clinic_User (id_Clinic_User)
 );
 
 CREATE TABLE Specialization (
@@ -34,13 +37,15 @@ CREATE TABLE doctor_specialization (
 
 CREATE TABLE Patient (
     id_Patient BIGINT PRIMARY KEY,
-    full_name VARCHAR(255),
+    first_name VARCHAR(255),
+    last_name VARCHAR(255),
+    middle_name VARCHAR(255),
     date_of_birth DATE,
     gender VARCHAR(255),
     phone_number VARCHAR(255),
     created_at TIMESTAMP,
     updated_at TIMESTAMP,
-    id_Clinic_User BIGINT NOT NULL REFERENCES Clinic_User (id_Clinic_User)
+    id_User BIGINT NOT NULL REFERENCES Clinic_User (id_Clinic_User)
 );
 
 CREATE TABLE Status (
@@ -50,7 +55,8 @@ CREATE TABLE Status (
 
 CREATE TABLE Appointment (
     id_Appointment BIGINT PRIMARY KEY,
-    date_time TIMESTAMP,
+    date DATE,
+    time TIME,
     symptoms VARCHAR(255),
     created_at TIMESTAMP,
     updated_at TIMESTAMP,
