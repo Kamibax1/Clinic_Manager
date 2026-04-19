@@ -10,6 +10,7 @@ import lombok.Setter;
 public class RoleEntity {
     @Id
     @Getter @Setter
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_Role")
     private Long id;
 

@@ -12,6 +12,7 @@ import java.util.List;
 public interface DoctorRepository extends JpaRepository<DoctorEntity, Long> {
     @Query("SELECT d FROM DoctorEntity d WHERE " +
             "LOWER(d.firstName) LIKE LOWER(CONCAT('%', :name, '%')) OR " +
-            "LOWER(d.lastName) LIKE LOWER(CONCAT('%', :name, '%'))")
-    List<DoctorEntity> searchByName(@Param("name") String name);
+            "LOWER(d.lastName) LIKE LOWER(CONCAT('%', :name, '%')) OR " +
+            "LOWER(d.middleName) LIKE LOWER(CONCAT('%', :name, '%'))")
+    List<DoctorEntity> findAllShortInfoByName(@Param("name") String name);
 }

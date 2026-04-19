@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.sql.Timestamp;
-import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -13,6 +12,7 @@ import java.util.Set;
 public class DoctorEntity {
     @Id
     @Getter @Setter
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_Doctor")
     private Long id;
 
@@ -21,6 +21,12 @@ public class DoctorEntity {
 
     @Getter @Setter
     private String lastName;
+
+    @Getter @Setter
+    private String middleName;
+
+    @Getter @Setter
+    private String phoneNumber;
 
     @Getter @Setter
     private int experienceYears;
@@ -33,27 +39,30 @@ public class DoctorEntity {
 
     @Getter @Setter
     @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_user")
+    @JoinColumn(name = "id_User")
     private UserEntity user;
 
     @Getter @Setter
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "doctor_specialization",
-            joinColumns = @JoinColumn(name = "id_doctor"),
-            inverseJoinColumns = @JoinColumn(name = "id_specialization")
+            joinColumns = @JoinColumn(name = "id_Doctor"),
+            inverseJoinColumns = @JoinColumn(name = "id_Specialization")
     )
-    private Set<SpecializationEntity> specializations = new HashSet<>();
+    private Set<SpecializationEntity> specializations;
 
     public DoctorEntity() {}
 
-    public DoctorEntity(Long id, String firstName, String lastName, int experienceYears, Timestamp createdAt, Timestamp updatedAt, UserEntity user) {
+    public DoctorEntity(Long id, String firstName, String lastName, String middleName, String phoneNumber, int experienceYears, Timestamp createdAt, Timestamp updatedAt, UserEntity user, Set<SpecializationEntity> specializations) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.middleName = middleName;
+        this.phoneNumber = phoneNumber;
         this.experienceYears = experienceYears;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.user = user;
+        this.specializations = specializations;
     }
 }

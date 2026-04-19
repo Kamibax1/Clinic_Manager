@@ -12,11 +12,18 @@ import java.time.LocalDate;
 public class PatientEntity {
     @Id
     @Getter @Setter
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_Patient")
     private Long id;
 
     @Getter @Setter
-    private String fullName;
+    private String firstName;
+
+    @Getter @Setter
+    private String lastName;
+
+    @Getter @Setter
+    private String middleName;
 
     @Getter @Setter
     private LocalDate dateOfBirth;
@@ -35,14 +42,16 @@ public class PatientEntity {
 
     @Getter @Setter
     @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_Clinic_User")
+    @JoinColumn(name = "id_User")
     private UserEntity user;
 
     public PatientEntity() {}
 
-    public PatientEntity(Long id, String fullName, LocalDate dateOfBirth, String gender, String phoneNumber, Timestamp createdAt, Timestamp updatedAt, UserEntity user) {
+    public PatientEntity(Long id, String firstName, String lastName, String middleName, LocalDate dateOfBirth, String gender, String phoneNumber, Timestamp createdAt, Timestamp updatedAt, UserEntity user) {
         this.id = id;
-        this.fullName = fullName;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.middleName = middleName;
         this.dateOfBirth = dateOfBirth;
         this.gender = gender;
         this.phoneNumber = phoneNumber;

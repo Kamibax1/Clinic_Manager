@@ -1,13 +1,12 @@
 package com.example.service;
 
-import com.example.model.dto.PatientDTO;
-import com.example.model.entity.PatientEntity;
+import com.example.model.dto.PatientShortInfoResponse;
 import com.example.repository.PatientRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class PatientService {
@@ -18,32 +17,17 @@ public class PatientService {
         this.patientRepository = patientRepository;
     }
 
-    public List<PatientDTO> findAll() {
+    @Transactional(readOnly = true, isolation = Isolation.READ_COMMITTED)
+    public List<PatientShortInfoResponse> findAllShortInfo() {
         return patientRepository.findAll().stream()
-                .map(PatientDTO::fromEntity)
+                .map(PatientShortInfoResponse::fromEntity)
                 .toList();
     }
 
-    @Transactional
-    public Optional<PatientDTO> findById(long id) {
-        Optional<PatientEntity> patientEntity = patientRepository.findById(id);
-        return patientEntity.map(PatientDTO::fromEntity);
-    }
-
-    @Transactional(readOnly = true)
-    public List<PatientDTO> findByPartFullName(String partFullName){
-        List<PatientEntity> patients = patientRepository.findByFullNameContainingIgnoreCase(partFullName);
-        return patients.stream()
-                .map(PatientDTO::fromEntity)
+    @Transactional(readOnly = true, isolation = Isolation.READ_COMMITTED)
+    public List<PatientShortInfoResponse> findAllShortInfoByName(String name) {
+        return patientRepository.findAllShortInfoByName(name).stream()
+                .map(PatientShortInfoResponse::fromEntity)
                 .toList();
-    }
-
-    @Transactional
-    public Optional<PatientDTO> update(long id, PatientDTO patientDTO) {
-        Optional<PatientEntity> patientEntity = patientRepository.findById(id);
-        return patientEntity.map(entity -> {
-            PatientEntity updated = PatientDTO.updateMap(entity, patientDTO);
-            return PatientDTO.fromEntity(updated);
-        });
     }
 }

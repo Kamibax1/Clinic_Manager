@@ -1,8 +1,9 @@
 package com.example.service;
 
-import com.example.exception.NotFoundException;
-import com.example.model.dto.AppointmentDTO;
-import com.example.model.dto.AppointmentFullDTO;
+import com.example.model.dto.AppointmentFullInformationResponse;
+import com.example.model.dto.AppointmentShortInfoResponse;
+import com.example.model.dto.CreateAppointmentRequest;
+import com.example.model.dto.CreateAppointmentResponse;
 import com.example.model.entity.AppointmentEntity;
 import com.example.model.entity.DoctorEntity;
 import com.example.model.entity.PatientEntity;
@@ -13,6 +14,7 @@ import com.example.repository.DoctorRepository;
 import com.example.repository.PatientRepository;
 import com.example.repository.StatusRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -32,40 +34,38 @@ public class AppointmentService {
         this.doctorRepository = doctorRepository;
     }
 
-    @Transactional
-    public AppointmentDTO save (AppointmentDTO appointmentDTO) {
-        return AppointmentDTO.fromEntity(appointmentRepository.save(convertToEntity(appointmentDTO)));
-    }
-
-    @Transactional(readOnly = true)
-    public List<AppointmentDTO> findAll() {
+    @Transactional(readOnly = true, isolation = Isolation.READ_COMMITTED)
+    public List<AppointmentShortInfoResponse> findAllShortInfo() {
         return appointmentRepository.findAll().stream()
-                .map(AppointmentDTO::fromEntity)
+                .map(AppointmentShortInfoResponse::fromEntity)
                 .toList();
     }
 
-    public List<AppointmentFullDTO> findAllFull() {
-        return appointmentRepository.findAllFull().stream()
-                .map(AppointmentFullDTO::fromEntity)
-                .toList();
-    }
-
-    @Transactional(readOnly = true)
-    public Optional<AppointmentDTO> findById(long id) {
+    @Transactional(readOnly = true, isolation = Isolation.READ_COMMITTED)
+    public Optional<AppointmentFullInformationResponse> findFullInfoById(long id) {
         return appointmentRepository.findById(id)
-                .map(AppointmentDTO::fromEntity);
+                .map(AppointmentFullInformationResponse::fromEntity);
     }
 
-    @Transactional(readOnly = true)
-    public Optional<AppointmentDTO> update(Long id, AppointmentDTO appointmentDTO) {
-        if (!appointmentRepository.existsById(id)) {
-            return Optional.empty();
-        }
-        AppointmentEntity entity = convertToEntity(appointmentDTO);
-        entity.setId(id);
-        return Optional.of(AppointmentDTO.fromEntity(appointmentRepository.save(entity)));
+    @Transactional(readOnly = true, isolation = Isolation.READ_COMMITTED)
+    public List<AppointmentShortInfoResponse> findAllShortInfoByDoctorName(String doctorName) {
+        return appointmentRepository.findAllShortInfoByDoctorName(doctorName).stream()
+                .map(AppointmentShortInfoResponse::fromEntity)
+                .toList();
     }
 
+    @Transactional(isolation = Isolation.READ_COMMITTED)
+    public Optional<AppointmentFullInformationResponse> updateStatus(long id, StatusEnum status) {
+        return appointmentRepository.findById(id).map(appointment -> {
+            StatusEntity newStatus = statusRepository.findByStatus(status);
+            appointment.setStatus(newStatus);
+            appointmentRepository.save(appointment);
+
+            return AppointmentFullInformationResponse.fromEntity(appointment);
+        });
+    }
+
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public void deleteById(long id) {
         appointmentRepository.deleteById(id);
     }
@@ -74,40 +74,19 @@ public class AppointmentService {
         return appointmentRepository.existsById(id);
     }
 
-    private AppointmentEntity convertToEntity(AppointmentDTO dto) {
-        StatusEntity status = statusRepository.findById(dto.getId_status())
-                .orElseThrow(() -> new NotFoundException("Status not found with id: " + dto.getId_status()));
+    @Transactional(isolation = Isolation.READ_COMMITTED)
+    public CreateAppointmentResponse createAppointment(CreateAppointmentRequest appointment) {
+        StatusEntity status = statusRepository.findByStatus(StatusEnum.PENDING);
 
-        PatientEntity patient = patientRepository.findById(dto.getId_patient())
-                .orElseThrow(() -> new NotFoundException("Patient not found with id: " + dto.getId_patient()));
+        PatientEntity patient = patientRepository.findById(appointment.getPatientId())
+                .orElseThrow(() -> new RuntimeException("Пациент с ID " + appointment.getPatientId() + " не найден"));
 
-        DoctorEntity doctor = doctorRepository.findById(dto.getId_doctor())
-                .orElseThrow(() -> new NotFoundException("Doctor not found with id: " + dto.getId_doctor()));
+        DoctorEntity doctor = doctorRepository.findById(appointment.getDoctorId())
+                .orElseThrow(() -> new RuntimeException("Доктор с ID " + appointment.getDoctorId() + " не найден"));
 
-        return AppointmentDTO.toEntity(dto, status, patient, doctor);
-    }
+        AppointmentEntity entity = CreateAppointmentRequest.toEntity(appointment, status, patient, doctor);
 
-    @Transactional(readOnly = true)
-    public List<AppointmentDTO> findAllByDoctorId(long id) {
-        List<AppointmentEntity> appointments = appointmentRepository.findAllByDoctorId(id);
-        return appointments.stream()
-                .map(AppointmentDTO::fromEntity)
-                .toList();
-    }
-
-    @Transactional(readOnly = true)
-    public List<AppointmentDTO> findAllByStatus(StatusEnum status) {
-        List<AppointmentEntity> appointments = appointmentRepository.findAllByStatusStatus(status);
-        return appointments.stream()
-                .map(AppointmentDTO::fromEntity)
-                .toList();
-    }
-
-    @Transactional(readOnly = true)
-    public List<AppointmentFullDTO> findAllByDoctorName(String doctorName) {
-        List<AppointmentEntity> appointments = appointmentRepository.findAllByDoctorName(doctorName);
-        return appointments.stream()
-                .map(AppointmentFullDTO::fromEntity)
-                .toList();
+        AppointmentEntity savedAppointment = appointmentRepository.save(entity);
+        return CreateAppointmentResponse.fromEntity(savedAppointment);
     }
 }

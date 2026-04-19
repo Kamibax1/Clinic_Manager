@@ -1,8 +1,10 @@
 package com.example.model.enums;
 
 public enum StatusEnum {
-    SCHEDULED,
-    CONFIRMED,
     COMPLETED,
-    CANCELLED
+    PENDING,
+    IN_PROGRESS,
+    SCHEDULED,
+    NO_SHOW,
+    CANCELLED,
 }

@@ -1,7 +1,6 @@
 package com.example.controller;
 
-import com.example.model.dto.AppointmentDTO;
-import com.example.model.dto.AppointmentFullDTO;
+import com.example.model.dto.*;
 import com.example.model.enums.StatusEnum;
 import com.example.service.AppointmentService;
 import org.springframework.http.ResponseEntity;
@@ -21,9 +20,9 @@ public class AppointmentController {
     }
 
     @PostMapping
-    public ResponseEntity<AppointmentDTO> save(@RequestBody AppointmentDTO appointmentDTO) {
+    public ResponseEntity<CreateAppointmentResponse> save(@RequestBody CreateAppointmentRequest dto) {
 
-        AppointmentDTO created =  appointmentService.save(appointmentDTO);
+        CreateAppointmentResponse created = appointmentService.createAppointment(dto);
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
@@ -34,36 +33,37 @@ public class AppointmentController {
         return ResponseEntity.created(location).body(created);
     }
 
-    @GetMapping
-    public ResponseEntity<List<AppointmentDTO>> findAll() {
-        List<AppointmentDTO> list = appointmentService.findAll();
-
-        if(list.isEmpty()){
+    @GetMapping("/information/short")
+    public ResponseEntity<List<AppointmentShortInfoResponse>> findAllShortInfo() {
+        List<AppointmentShortInfoResponse> appointments = appointmentService.findAllShortInfo();
+        if (appointments.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-
-        return ResponseEntity.ok().body(list);
+        return ResponseEntity.ok(appointments);
     }
 
-    @GetMapping("/full")
-    public ResponseEntity<List<AppointmentFullDTO>> findAllFull() {
-        List<AppointmentFullDTO> list = appointmentService.findAllFull();
-        return list.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(list);
+    @GetMapping("/information/short/{name}")
+    public ResponseEntity<List<AppointmentShortInfoResponse>> findAllShortInfoByDoctorName(@PathVariable String name) {
+        List<AppointmentShortInfoResponse> appointments = appointmentService.findAllShortInfoByDoctorName(name);
+        if (appointments.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(appointments);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<AppointmentDTO> findById(@PathVariable Long id) {
-        return appointmentService.findById(id)
+    @GetMapping("information/full/{id}")
+    public ResponseEntity<AppointmentFullInformationResponse> findFullInfoById(@PathVariable long id) {
+        return appointmentService.findFullInfoById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<AppointmentDTO> update(@PathVariable Long id, @RequestBody AppointmentDTO appointmentDTO) {
-        return appointmentService.update(id, appointmentDTO)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
-    }
+//    @PutMapping("/{id}")
+//    public ResponseEntity<AppointmentDTO> update(@PathVariable Long id, @RequestBody AppointmentDTO appointmentDTO) {
+//        return appointmentService.update(id, appointmentDTO)
+//                .map(ResponseEntity::ok)
+//                .orElse(ResponseEntity.notFound().build());
+//    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteById(@PathVariable Long id) {
@@ -76,21 +76,14 @@ public class AppointmentController {
         }
     }
 
-    @GetMapping("/find/doctor/{id}")
-    public ResponseEntity<List<AppointmentDTO>> findAllByDoctorId(@PathVariable Long id) {
-        List<AppointmentDTO> appointments = appointmentService.findAllByDoctorId(id);
-        return ResponseEntity.ok(appointments);
-    }
+    @PutMapping("/information/{id}")
+    public ResponseEntity<AppointmentFullInformationResponse> updateStatus(
+            @PathVariable Long id,
+            @RequestBody StatusEnum status
+    ) {
 
-    @GetMapping("/find/status/{status}")
-    public ResponseEntity<List<AppointmentDTO>> findAllByStatus(@PathVariable StatusEnum status) {
-        List<AppointmentDTO> appointments = appointmentService.findAllByStatus(status);
-        return ResponseEntity.ok(appointments);
-    }
-
-    @GetMapping("/full/search/doctor/{doctorName}")
-    public ResponseEntity<List<AppointmentFullDTO>> findAllByDoctorName(@PathVariable String doctorName) {
-        List<AppointmentFullDTO> appointments = appointmentService.findAllByDoctorName(doctorName);
-        return ResponseEntity.ok(appointments);
+        return appointmentService.updateStatus(id, status)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 }
