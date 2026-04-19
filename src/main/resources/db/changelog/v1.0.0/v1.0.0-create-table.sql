@@ -1,10 +1,10 @@
 CREATE TABLE Role (
-    id_Role BIGINT PRIMARY KEY,
+    id_Role BIGSERIAL PRIMARY KEY,
     name VARCHAR(255)
 );
 
 CREATE TABLE Clinic_User (
-    id_Clinic_User BIGINT PRIMARY KEY,
+    id_Clinic_User BIGSERIAL PRIMARY KEY,
     email VARCHAR(255),
     nickname VARCHAR(255),
     password VARCHAR(255),
@@ -14,7 +14,7 @@ CREATE TABLE Clinic_User (
 );
 
 CREATE TABLE Doctor (
-    id_Doctor BIGINT PRIMARY KEY,
+    id_Doctor BIGSERIAL PRIMARY KEY,
     first_name VARCHAR(255),
     last_name VARCHAR(255),
     middle_name VARCHAR(255),
@@ -26,7 +26,7 @@ CREATE TABLE Doctor (
 );
 
 CREATE TABLE Specialization (
-    id_Specialization BIGINT PRIMARY KEY,
+    id_Specialization BIGSERIAL PRIMARY KEY,
     name VARCHAR(255)
 );
 
@@ -36,7 +36,7 @@ CREATE TABLE doctor_specialization (
 );
 
 CREATE TABLE Patient (
-    id_Patient BIGINT PRIMARY KEY,
+    id_Patient BIGSERIAL PRIMARY KEY,
     first_name VARCHAR(255),
     last_name VARCHAR(255),
     middle_name VARCHAR(255),
@@ -49,12 +49,12 @@ CREATE TABLE Patient (
 );
 
 CREATE TABLE Status (
-    id_Status BIGINT PRIMARY KEY,
+    id_Status BIGSERIAL PRIMARY KEY,
     status VARCHAR(255)
 );
 
 CREATE TABLE Appointment (
-    id_Appointment BIGINT PRIMARY KEY,
+    id_Appointment BIGSERIAL PRIMARY KEY,
     date DATE,
     time TIME,
     symptoms VARCHAR(255),

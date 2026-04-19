@@ -1,9 +1,14 @@
 package com.example.model.dto;
 
 import com.example.model.entity.AppointmentEntity;
+import com.example.model.entity.DoctorEntity;
+import com.example.model.entity.PatientEntity;
 import com.example.model.entity.StatusEntity;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.persistence.Id;
+import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,63 +16,57 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class CreateAppointmentRequest {
-    @Id
-    @Getter @Setter
-    @JsonProperty("id_create_appointment")
-    private Long id;
-
+    @NotNull(message = "Дата не может быть пустой")
+    @FutureOrPresent(message = "Дата должна быть сегодня или в будущем")
     @Getter @Setter
     private LocalDate date;
 
+    @NotNull(message = "Время не может быть пустым")
     @Getter @Setter
     private LocalTime time;
 
+    @NotBlank(message = "Симптомы не могут быть пустыми")
+    @Size(min = 5, max = 500, message = "Симптомы должны быть от 5 до 500 символов")
     @Getter @Setter
     private String symptoms;
 
     @Getter @Setter
-    private PatientShortInfoResponse patient;
+    @JsonProperty("id_patient_short_information")
+    private Long patientId;
 
     @Getter @Setter
-    private DoctorShortInfoResponse doctor;
-
-    @Getter @Setter
-    private StatusEntity status;
+    @JsonProperty("id_doctor_short_information")
+    private Long doctorId;
 
     public CreateAppointmentRequest() {
     }
 
-    public CreateAppointmentRequest(Long id, LocalDate date, LocalTime time, String symptoms, PatientShortInfoResponse patient, DoctorShortInfoResponse doctor, StatusEntity status) {
-        this.id = id;
+    public CreateAppointmentRequest(LocalDate date, LocalTime time, String symptoms, Long patientId, Long doctorId) {
         this.date = date;
         this.time = time;
         this.symptoms = symptoms;
-        this.patient = patient;
-        this.doctor = doctor;
-        this.status = status;
+        this.patientId = patientId;
+        this.doctorId = doctorId;
     }
 
     public static CreateAppointmentRequest fromEntity(AppointmentEntity entity) {
         CreateAppointmentRequest dto = new CreateAppointmentRequest();
-        dto.setId(entity.getId());
         dto.date = entity.getDate();
         dto.time = entity.getTime();
         dto.symptoms = entity.getSymptoms();
-        dto.patient = PatientShortInfoResponse.fromEntity(entity.getPatient());
-        dto.doctor = DoctorShortInfoResponse.fromEntity(entity.getDoctor());
-        dto.status = entity.getStatus();
+        dto.patientId = entity.getPatient().getId();
+        dto.doctorId = entity.getDoctor().getId();
         return dto;
     }
 
-    public static AppointmentEntity toEntity(CreateAppointmentRequest dto) {
+    public static AppointmentEntity toEntity(CreateAppointmentRequest dto, StatusEntity status, PatientEntity patient, DoctorEntity doctor) {
         AppointmentEntity entity = new AppointmentEntity();
-        entity.setId(dto.getId());
-        entity.setDate(dto.getDate());
-        entity.setTime(dto.getTime());
+        entity.setDate(dto.date);
+        entity.setTime(dto.time);
         entity.setSymptoms(dto.symptoms);
-        entity.setPatient(PatientShortInfoResponse.toEntity(dto.getPatient()));
-        entity.setDoctor(DoctorShortInfoResponse.toEntity(dto.getDoctor()));
-        entity.setStatus(dto.status);
+        entity.setStatus(status);
+        entity.setPatient(patient);
+        entity.setDoctor(doctor);
         return entity;
     }
 }

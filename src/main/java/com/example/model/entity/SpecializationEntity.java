@@ -12,6 +12,7 @@ import java.util.Set;
 public class SpecializationEntity {
     @Id
     @Getter @Setter
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_Specialization")
     private Long id;
 

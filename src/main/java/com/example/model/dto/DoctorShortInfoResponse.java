@@ -2,6 +2,7 @@ package com.example.model.dto;
 
 import com.example.model.entity.DoctorEntity;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,6 +10,11 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class DoctorShortInfoResponse {
+    @Id
+    @Getter @Setter
+    @JsonProperty("id_doctor_short_information")
+    private Long id;
+
     @Getter @Setter
     @JsonProperty("first_name")
     private String firstName;
@@ -41,6 +47,7 @@ public class DoctorShortInfoResponse {
 
     public static DoctorShortInfoResponse fromEntity(DoctorEntity entity) {
         DoctorShortInfoResponse dto = new DoctorShortInfoResponse();
+        dto.setId(entity.getId());
         dto.firstName = entity.getFirstName();
         dto.lastName = entity.getLastName();
         dto.middleName = entity.getMiddleName();
@@ -53,6 +60,7 @@ public class DoctorShortInfoResponse {
 
     public static DoctorEntity toEntity(DoctorShortInfoResponse dto) {
         DoctorEntity entity = new DoctorEntity();
+        entity.setId(dto.id);
         entity.setFirstName(dto.firstName);
         entity.setLastName(dto.lastName);
         entity.setMiddleName(dto.middleName);

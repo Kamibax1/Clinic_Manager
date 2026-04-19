@@ -1,12 +1,13 @@
 package com.example.model.dto;
 
-import com.example.model.entity.StatusEntity;
+import com.example.model.entity.AppointmentEntity;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 public class CreateAppointmentResponse {
     @Id
@@ -15,11 +16,16 @@ public class CreateAppointmentResponse {
     private Long id;
 
     @Getter @Setter
-    @JsonProperty("date_time")
-    private LocalDateTime dateTime;
+    private LocalDate date;
+
+    @Getter @Setter
+    private LocalTime time;
 
     @Getter @Setter
     private String symptoms;
+
+    @Getter @Setter
+    private StatusDTO status;
 
     @Getter @Setter
     private PatientShortInfoResponse patient;
@@ -27,18 +33,29 @@ public class CreateAppointmentResponse {
     @Getter @Setter
     private DoctorShortInfoResponse doctor;
 
-    @Getter @Setter
-    private StatusEntity status;
 
     public CreateAppointmentResponse() {
     }
 
-    public CreateAppointmentResponse(Long id, LocalDateTime dateTime, String symptoms, PatientShortInfoResponse patient, DoctorShortInfoResponse doctor, StatusEntity status) {
+    public CreateAppointmentResponse(Long id, LocalDate date, LocalTime time, String symptoms, StatusDTO status, PatientShortInfoResponse patient, DoctorShortInfoResponse doctor) {
         this.id = id;
-        this.dateTime = dateTime;
+        this.date = date;
+        this.time = time;
         this.symptoms = symptoms;
+        this.status = status;
         this.patient = patient;
         this.doctor = doctor;
-        this.status = status;
+    }
+
+    public static CreateAppointmentResponse fromEntity(AppointmentEntity entity) {
+        CreateAppointmentResponse dto = new CreateAppointmentResponse();
+        dto.id = entity.getId();
+        dto.date = entity.getDate();
+        dto.time = entity.getTime();
+        dto.symptoms = entity.getSymptoms();
+        dto.status = StatusDTO.fromEntity(entity.getStatus());
+        dto.patient = PatientShortInfoResponse.fromEntity(entity.getPatient());
+        dto.doctor = DoctorShortInfoResponse.fromEntity(entity.getDoctor());
+        return dto;
     }
 }

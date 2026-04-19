@@ -3,6 +3,7 @@ package com.example.service;
 import com.example.model.dto.PatientShortInfoResponse;
 import com.example.repository.PatientRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -16,14 +17,14 @@ public class PatientService {
         this.patientRepository = patientRepository;
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true, isolation = Isolation.READ_COMMITTED)
     public List<PatientShortInfoResponse> findAllShortInfo() {
         return patientRepository.findAll().stream()
                 .map(PatientShortInfoResponse::fromEntity)
                 .toList();
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true, isolation = Isolation.READ_COMMITTED)
     public List<PatientShortInfoResponse> findAllShortInfoByName(String name) {
         return patientRepository.findAllShortInfoByName(name).stream()
                 .map(PatientShortInfoResponse::fromEntity)

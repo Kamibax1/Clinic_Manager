@@ -20,9 +20,9 @@ public class AppointmentController {
     }
 
     @PostMapping
-    public ResponseEntity<CreateAppointmentRequest> save(@RequestBody CreateAppointmentRequest dto) {
+    public ResponseEntity<CreateAppointmentResponse> save(@RequestBody CreateAppointmentRequest dto) {
 
-        CreateAppointmentRequest created = appointmentService.createAppointment(dto);
+        CreateAppointmentResponse created = appointmentService.createAppointment(dto);
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()

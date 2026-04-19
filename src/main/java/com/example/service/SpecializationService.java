@@ -3,6 +3,7 @@ package com.example.service;
 import com.example.model.dto.SpecializationDTO;
 import com.example.repository.SpecializationRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -14,7 +15,7 @@ public class SpecializationService {
         this.specializationRepository = specializationRepository;
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true, isolation = Isolation.READ_COMMITTED)
     public List<SpecializationDTO> findAllSpecializations() {
         return specializationRepository.findAll().stream()
                 .map(SpecializationDTO::fromEntity)

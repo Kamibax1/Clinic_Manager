@@ -11,6 +11,7 @@ import java.sql.Timestamp;
 public class UserEntity {
     @Id
     @Getter @Setter
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_Clinic_User")
     private Long id;
 

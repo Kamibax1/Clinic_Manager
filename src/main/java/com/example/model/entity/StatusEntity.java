@@ -10,6 +10,7 @@ import lombok.Setter;
 public class StatusEntity {
     @Id
     @Getter @Setter
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_Status")
     private Long id;
 

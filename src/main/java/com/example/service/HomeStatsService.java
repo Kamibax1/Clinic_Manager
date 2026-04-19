@@ -4,6 +4,7 @@ import com.example.model.dto.HomeStatsResponse;
 import com.example.model.enums.StatusEnum;
 import com.example.repository.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
@@ -20,7 +21,7 @@ public class HomeStatsService {
         this.doctorRepository = doctorRepository;
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true, isolation = Isolation.READ_COMMITTED)
     public HomeStatsResponse getHomeStats() {
         return new HomeStatsResponse(
                 appointmentRepository.findAllByDate(LocalDate.now()).size(),

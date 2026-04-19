@@ -27,4 +27,8 @@ public class StatusDTO {
     public static StatusDTO fromEntity(StatusEntity entity) {
         return new StatusDTO(entity.getId(), entity.getStatus());
     }
+
+    public static StatusEntity toEntity(StatusDTO dto) {
+        return new StatusEntity(dto.id, dto.status);
+    }
 }
