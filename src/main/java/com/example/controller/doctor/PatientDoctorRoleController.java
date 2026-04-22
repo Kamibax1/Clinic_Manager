@@ -1,6 +1,6 @@
-package com.example.controller;
+package com.example.controller.doctor;
 
-import com.example.model.dto.PatientShortInfoResponse;
+import com.example.model.dto.patient.response.PatientShortInfoResponse;
 import com.example.service.PatientService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -8,19 +8,17 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/patients")
-public class PatientController {
-
+@RequestMapping("/api/doctor/patient")
+public class PatientDoctorRoleController {
     private final PatientService patientService;
-
-    public PatientController(PatientService patientDataService) {
-        this.patientService = patientDataService;
+    public PatientDoctorRoleController(PatientService patientService) {
+        this.patientService = patientService;
     }
 
     @GetMapping("/information/short")
-    public ResponseEntity<List<PatientShortInfoResponse>> findAllShortInfo(){
+    public ResponseEntity<List<PatientShortInfoResponse>> findAllPatientShortInfo() {
         List<PatientShortInfoResponse> patients = patientService.findAllShortInfo();
-        if(patients.isEmpty()){
+        if (patients.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(patients);

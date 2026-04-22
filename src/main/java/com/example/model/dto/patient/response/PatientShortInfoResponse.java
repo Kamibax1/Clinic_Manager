@@ -1,13 +1,19 @@
-package com.example.model.dto;
+package com.example.model.dto.patient.response;
 
 import com.example.model.entity.PatientEntity;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
 
-public class PatientFullInformationResponse {
+public class PatientShortInfoResponse {
+    @Id
+    @Getter @Setter
+    @JsonProperty("id_patient_short_information")
+    private Long id;
+
     @Getter @Setter
     @JsonProperty("first_name")
     private String firstName;
@@ -24,38 +30,40 @@ public class PatientFullInformationResponse {
     @Getter @Setter
     private LocalDate dateOfBirth;
 
-    @Getter @Setter
-    private String gender;
-
     @JsonProperty("phone_number")
     @Getter @Setter
     private String phoneNumber;
 
-    @Getter @Setter
-    private String email;
-
-    public PatientFullInformationResponse() {
+    public PatientShortInfoResponse() {
     }
 
-    public PatientFullInformationResponse(String firstName, String lastName, String middleName, LocalDate dateOfBirth, String gender, String phoneNumber, String email) {
+    public PatientShortInfoResponse(String firstName, String lastName, String middleName, LocalDate dateOfBirth, String phoneNumber) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.middleName = middleName;
         this.dateOfBirth = dateOfBirth;
-        this.gender = gender;
         this.phoneNumber = phoneNumber;
-        this.email = email;
     }
 
-    public static PatientFullInformationResponse fromEntity(PatientEntity entity) {
-        PatientFullInformationResponse dto = new PatientFullInformationResponse();
+    public static PatientShortInfoResponse fromEntity(PatientEntity entity) {
+        PatientShortInfoResponse dto = new PatientShortInfoResponse();
+        dto.id = entity.getId();
         dto.firstName = entity.getFirstName();
         dto.lastName = entity.getLastName();
         dto.middleName = entity.getMiddleName();
         dto.dateOfBirth = entity.getDateOfBirth();
-        dto.gender = entity.getGender();
         dto.phoneNumber = entity.getPhoneNumber();
-        dto.email = entity.getUser().getEmail();
         return dto;
+    }
+
+    public static PatientEntity toEntity(PatientShortInfoResponse dto) {
+        PatientEntity entity = new PatientEntity();
+        entity.setId(dto.id);
+        entity.setFirstName(dto.firstName);
+        entity.setLastName(dto.lastName);
+        entity.setMiddleName(dto.middleName);
+        entity.setDateOfBirth(dto.dateOfBirth);
+        entity.setPhoneNumber(dto.phoneNumber);
+        return entity;
     }
 }

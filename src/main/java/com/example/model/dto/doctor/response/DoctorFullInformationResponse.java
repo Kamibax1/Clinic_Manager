@@ -1,5 +1,6 @@
-package com.example.model.dto;
+package com.example.model.dto.doctor.response;
 
+import com.example.model.dto.SpecializationDTO;
 import com.example.model.entity.DoctorEntity;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;

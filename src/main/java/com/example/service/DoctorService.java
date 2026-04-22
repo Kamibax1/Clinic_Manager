@@ -1,10 +1,7 @@
 package com.example.service;
 
-import com.example.model.dto.DoctorShortInfoResponse;
-import com.example.model.dto.SpecializationDTO;
-import com.example.model.entity.SpecializationEntity;
+import com.example.model.dto.doctor.response.DoctorShortInfoResponse;
 import com.example.repository.DoctorRepository;
-import com.example.repository.SpecializationRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;

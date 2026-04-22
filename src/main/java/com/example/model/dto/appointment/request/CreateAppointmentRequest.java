@@ -1,4 +1,4 @@
-package com.example.model.dto;
+package com.example.model.dto.appointment.request;
 
 import com.example.model.entity.AppointmentEntity;
 import com.example.model.entity.DoctorEntity;

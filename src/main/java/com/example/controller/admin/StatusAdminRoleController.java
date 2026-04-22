@@ -1,4 +1,4 @@
-package com.example.controller;
+package com.example.controller.admin;
 
 import com.example.model.dto.StatusDTO;
 import com.example.model.enums.StatusEnum;
@@ -6,24 +6,13 @@ import com.example.service.StatusService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
-@RequestMapping("/api/status")
-public class StatusController {
+@RequestMapping("/api/admin/status")
+public class StatusAdminRoleController {
     private final StatusService statusService;
 
-    public StatusController(StatusService statusService) {
+    public StatusAdminRoleController(StatusService statusService) {
         this.statusService = statusService;
-    }
-
-    @GetMapping
-    public ResponseEntity<List<StatusDTO>> findAll(){
-        List<StatusDTO> statusEntities = statusService.findAll();
-        if(statusEntities.isEmpty()){
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(statusEntities);
     }
 
     @GetMapping("/{id}")

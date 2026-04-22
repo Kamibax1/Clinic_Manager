@@ -1,19 +1,20 @@
-package com.example.controller;
+package com.example.controller.patient;
 
-import com.example.model.dto.DoctorShortInfoResponse;
-import com.example.model.dto.SpecializationDTO;
+import com.example.model.dto.doctor.response.DoctorShortInfoResponse;
 import com.example.service.DoctorService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/doctors")
-public class DoctorController {
+@RequestMapping("/api/patient/doctors")
+public class DoctorPatientRoleController {
     private final DoctorService doctorService;
-
-    public DoctorController(DoctorService doctorService) {
+    public DoctorPatientRoleController(DoctorService doctorService) {
         this.doctorService = doctorService;
     }
 

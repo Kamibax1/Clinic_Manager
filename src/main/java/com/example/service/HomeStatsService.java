@@ -24,10 +24,10 @@ public class HomeStatsService {
     @Transactional(readOnly = true, isolation = Isolation.READ_COMMITTED)
     public HomeStatsResponse getHomeStats() {
         return new HomeStatsResponse(
-                appointmentRepository.findAllByDate(LocalDate.now()).size(),
+                appointmentRepository.countByDate(LocalDate.now()),
                 patientRepository.findAll().size(),
                 doctorRepository.findAll().size(),
-                appointmentRepository.findAllByStatusStatus(StatusEnum.COMPLETED).size()
+                appointmentRepository.countByStatusStatus(StatusEnum.COMPLETED)
         );
     }
 }

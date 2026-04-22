@@ -1,5 +1,8 @@
-package com.example.model.dto;
+package com.example.model.dto.appointment.response;
 
+import com.example.model.dto.doctor.response.DoctorShortInfoResponse;
+import com.example.model.dto.patient.response.PatientShortInfoResponse;
+import com.example.model.dto.StatusDTO;
 import com.example.model.entity.AppointmentEntity;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Id;
