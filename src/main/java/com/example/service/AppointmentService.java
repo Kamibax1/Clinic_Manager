@@ -1,25 +1,21 @@
 package com.example.service;
 
-import com.example.model.dto.AppointmentFullInformationResponse;
-import com.example.model.dto.AppointmentShortInfoResponse;
-import com.example.model.dto.CreateAppointmentRequest;
-import com.example.model.dto.CreateAppointmentResponse;
-import com.example.model.entity.AppointmentEntity;
-import com.example.model.entity.DoctorEntity;
-import com.example.model.entity.PatientEntity;
-import com.example.model.entity.StatusEntity;
+import com.example.exception.AccessDeniedException;
+import com.example.exception.ResourceNotFoundException;
+import com.example.model.dto.appointment.request.UpdateAppointmentStatusRequest;
+import com.example.model.dto.appointment.response.*;
+import com.example.model.dto.appointment.request.CreateAppointmentRequest;
+import com.example.model.entity.*;
 import com.example.model.enums.StatusEnum;
-import com.example.repository.AppointmentRepository;
-import com.example.repository.DoctorRepository;
-import com.example.repository.PatientRepository;
-import com.example.repository.StatusRepository;
+import com.example.repository.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
+@Slf4j
 @Service
 public class AppointmentService {
     private final AppointmentRepository appointmentRepository;
@@ -34,6 +30,26 @@ public class AppointmentService {
         this.doctorRepository = doctorRepository;
     }
 
+    @Transactional(isolation = Isolation.READ_COMMITTED)
+    public CreateAppointmentResponse createAppointment(CreateAppointmentRequest appointment) {
+        log.info("Создание записи для пациента с ID: {}, доктора с ID: {}", appointment.getPatientId(), appointment.getDoctorId());
+        StatusEntity status = statusRepository.findByStatus(StatusEnum.PENDING);
+        if (status == null) {
+            throw new ResourceNotFoundException("Status", "name", StatusEnum.PENDING);
+        }
+
+        PatientEntity patient = patientRepository.findById(appointment.getPatientId())
+                .orElseThrow(() -> new ResourceNotFoundException("Patient", appointment.getPatientId()));
+        DoctorEntity doctor = doctorRepository.findById(appointment.getDoctorId())
+                .orElseThrow(() -> new ResourceNotFoundException("Doctor", appointment.getDoctorId()));
+
+        AppointmentEntity entity = CreateAppointmentRequest.toEntity(appointment, status, patient, doctor);
+        AppointmentEntity savedAppointment = appointmentRepository.save(entity);
+
+        log.info("Запись создалась успешно с ID: {}", savedAppointment.getId());
+        return CreateAppointmentResponse.fromEntity(savedAppointment);
+    }
+
     @Transactional(readOnly = true, isolation = Isolation.READ_COMMITTED)
     public List<AppointmentShortInfoResponse> findAllShortInfo() {
         return appointmentRepository.findAll().stream()
@@ -42,9 +58,24 @@ public class AppointmentService {
     }
 
     @Transactional(readOnly = true, isolation = Isolation.READ_COMMITTED)
-    public Optional<AppointmentFullInformationResponse> findFullInfoById(long id) {
+    public List<AppointmentShortInfoResponse> findAllShortInfoByPatientId(long patientId) {
+        return appointmentRepository.findAllByPatientId(patientId).stream()
+                .map(AppointmentShortInfoResponse::fromEntity)
+                .toList();
+    }
+
+    @Transactional(readOnly = true, isolation = Isolation.READ_COMMITTED)
+    public List<AppointmentShortInfoResponse> findAllShortInfoByDoctorId(long id) {
+        return appointmentRepository.findAllByDoctorId(id).stream()
+                .map(AppointmentShortInfoResponse::fromEntity)
+                .toList();
+    }
+
+    @Transactional(readOnly = true, isolation = Isolation.READ_COMMITTED)
+    public AppointmentFullInformationResponse findFullInfoById(long id) {
         return appointmentRepository.findById(id)
-                .map(AppointmentFullInformationResponse::fromEntity);
+                .map(AppointmentFullInformationResponse::fromEntity)
+                .orElseThrow(() -> new ResourceNotFoundException("Appointment", id));
     }
 
     @Transactional(readOnly = true, isolation = Isolation.READ_COMMITTED)
@@ -55,38 +86,52 @@ public class AppointmentService {
     }
 
     @Transactional(isolation = Isolation.READ_COMMITTED)
-    public Optional<AppointmentFullInformationResponse> updateStatus(long id, StatusEnum status) {
-        return appointmentRepository.findById(id).map(appointment -> {
-            StatusEntity newStatus = statusRepository.findByStatus(status);
-            appointment.setStatus(newStatus);
-            appointmentRepository.save(appointment);
+    public AppointmentFullInformationResponse updateStatus(long id, StatusEnum status) {
+        log.info("Обновление статуса записи с ID: {} на: {}", id, status);
+        AppointmentEntity appointment = appointmentRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Appointment", id));
+        StatusEntity newStatus = statusRepository.findByStatus(status);
+        if (newStatus == null) {
+            throw new ResourceNotFoundException("Status", "name", status);
+        }
+        appointment.setStatus(newStatus);
+        appointmentRepository.save(appointment);
 
-            return AppointmentFullInformationResponse.fromEntity(appointment);
-        });
+        log.info("ID Записи: {} статус обновлен на: {}", id, status);
+        return AppointmentFullInformationResponse.fromEntity(appointment);
+    }
+
+    @Transactional(isolation = Isolation.READ_COMMITTED)
+    public AppointmentFullInformationResponse updateDoctorAppointmentStatus(long appointmentId, UpdateAppointmentStatusRequest request) {
+        log.info("ID Доктора: {} обновление статуса записи с ID: {} на: {}", request.getDoctorId(), appointmentId, request.getStatus());
+        AppointmentEntity appointment = appointmentRepository.findById(appointmentId)
+                .orElseThrow(() -> new ResourceNotFoundException("Appointment", appointmentId));
+        if (appointment.getDoctor().getId() != request.getDoctorId()) {
+            throw new AccessDeniedException("Appointment", appointmentId, "DOCTOR");
+        }
+
+        StatusEntity newStatus = statusRepository.findByStatus(request.getStatus());
+        if (newStatus == null) {
+            throw new ResourceNotFoundException("Status", "name", request.getStatus());
+        }
+
+        appointment.setStatus(newStatus);
+        appointmentRepository.save(appointment);
+
+        log.info("ID Записи: {} статус обновлен на: {} от врача с ID: {}", appointmentId, request.getStatus(), request.getDoctorId());
+        return AppointmentFullInformationResponse.fromEntity(appointment);
     }
 
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public void deleteById(long id) {
+        if (!appointmentRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Appointment", id);
+        }
         appointmentRepository.deleteById(id);
+        log.info("ID Записи: {} успешно удален", id);
     }
 
     public boolean existsById(long id) {
         return appointmentRepository.existsById(id);
-    }
-
-    @Transactional(isolation = Isolation.READ_COMMITTED)
-    public CreateAppointmentResponse createAppointment(CreateAppointmentRequest appointment) {
-        StatusEntity status = statusRepository.findByStatus(StatusEnum.PENDING);
-
-        PatientEntity patient = patientRepository.findById(appointment.getPatientId())
-                .orElseThrow(() -> new RuntimeException("Пациент с ID " + appointment.getPatientId() + " не найден"));
-
-        DoctorEntity doctor = doctorRepository.findById(appointment.getDoctorId())
-                .orElseThrow(() -> new RuntimeException("Доктор с ID " + appointment.getDoctorId() + " не найден"));
-
-        AppointmentEntity entity = CreateAppointmentRequest.toEntity(appointment, status, patient, doctor);
-
-        AppointmentEntity savedAppointment = appointmentRepository.save(entity);
-        return CreateAppointmentResponse.fromEntity(savedAppointment);
     }
 }

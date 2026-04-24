@@ -3,6 +3,8 @@ package com.example.model.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
 
@@ -15,19 +17,28 @@ public class UserEntity {
     @Column(name = "id_Clinic_User")
     private Long id;
 
+    @Column(nullable = false, unique = true, length = 100)
     @Getter @Setter
     private String email;
 
+    @Column(nullable = false, unique = true, length = 50)
     @Getter @Setter
     private String username;
 
+    @Column(nullable = false)
     @Getter @Setter
     private String password;
 
+    @Column(name = "enabled", nullable = false)
     @Getter @Setter
+    private boolean enabled = true;
+
+    @Getter @Setter
+    @CreationTimestamp
     private Timestamp createdAt;
 
     @Getter @Setter
+    @UpdateTimestamp
     private Timestamp updatedAt;
 
     @Getter @Setter
@@ -37,11 +48,12 @@ public class UserEntity {
 
     public UserEntity(){}
 
-    public UserEntity(Long id, String email, String username, String password, Timestamp createdAt, Timestamp updatedAt, RoleEntity role) {
+    public UserEntity(Long id, String email, String username, String password, boolean enabled, Timestamp createdAt, Timestamp updatedAt, RoleEntity role) {
         this.id = id;
         this.email = email;
         this.username = username;
         this.password = password;
+        this.enabled = enabled;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.role = role;

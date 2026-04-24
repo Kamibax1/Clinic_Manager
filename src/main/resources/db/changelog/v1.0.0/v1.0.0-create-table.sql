@@ -6,8 +6,9 @@ CREATE TABLE Role (
 CREATE TABLE Clinic_User (
     id_Clinic_User BIGSERIAL PRIMARY KEY,
     email VARCHAR(255),
-    nickname VARCHAR(255),
+    username VARCHAR(255),
     password VARCHAR(255),
+    enabled BOOLEAN,
     created_at TIMESTAMP,
     updated_at TIMESTAMP,
     id_Role BIGINT NOT NULL REFERENCES Role (id_Role)

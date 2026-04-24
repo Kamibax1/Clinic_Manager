@@ -13,9 +13,27 @@ import java.util.List;
 @Repository
 public interface AppointmentRepository extends JpaRepository<AppointmentEntity,Long> {
 
-    List<AppointmentEntity> findAllByStatusStatus(@Param("status") StatusEnum status);
+    List<AppointmentEntity> findAllByPatientId(@Param("patientId") Long patientId);
 
-    List<AppointmentEntity> findAllByDate(@Param("date") LocalDate date);
+    List<AppointmentEntity> findAllByDoctorId(@Param("id") Long id);
+
+    int countByPatientId(@Param("patientId") Long patientId);
+
+    int countByDoctorId(@Param("id") Long id);
+
+    int countByStatusStatus(@Param("status") StatusEnum status);
+
+    int countByDate(@Param("date") LocalDate date);
+
+    int countByPatientIdAndStatusStatusIn(
+            @Param("patientId") Long patientId,
+            @Param("statuses") List<StatusEnum> statuses
+    );
+
+    int countByDoctorIdAndStatusStatusIn(
+            @Param("doctorId") Long doctorId,
+            @Param("statuses") List<StatusEnum> statuses
+    );
 
     @Query("SELECT a FROM AppointmentEntity a WHERE " +
             "LOWER(a.doctor.firstName) LIKE LOWER(CONCAT('%', :doctorName, '%')) OR " +
