@@ -4,6 +4,7 @@ import com.example.model.dto.appointment.response.AppointmentFullInformationResp
 import com.example.model.enums.StatusEnum;
 import com.example.service.AppointmentService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -14,6 +15,7 @@ public class AppointmentAdminRoleController {
         this.appointmentService = appointmentService;
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteById(@PathVariable Long id) {
         if(appointmentService.existsById(id)){
@@ -25,6 +27,7 @@ public class AppointmentAdminRoleController {
         }
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/information/full/{id}")
     public ResponseEntity<AppointmentFullInformationResponse> updateStatus(
             @PathVariable Long id,

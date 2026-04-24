@@ -38,7 +38,7 @@ public class PatientService {
 
     @Transactional(readOnly = true, isolation = Isolation.READ_COMMITTED)
     public Optional<UpdatePatientFullInformationResponse> updateFullInfo(long id, UpdatePatientFullInformationRequest request) {
-        log.info("Updating patient full info for ID: {}", id);
+        log.info("Обновление полной информации пациента с ID: {}", id);
         return patientRepository.findById(id).map(patient -> {
             patient.setFirstName(request.getFirstName());
             patient.setLastName(request.getLastName());
@@ -49,7 +49,7 @@ public class PatientService {
             patient.setPhoneNumber(request.getPhoneNumber());
 
             patientRepository.save(patient);
-            log.info("Patient ID: {} updated successfully", id);
+            log.info("ID Пациента: {} успешно обновлен", id);
             return UpdatePatientFullInformationResponse.fromEntity(patient);
         });
     }

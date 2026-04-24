@@ -8,7 +8,6 @@ import com.example.model.enums.StatusEnum;
 import com.example.repository.AppointmentRepository;
 import com.example.repository.DoctorRepository;
 import com.example.repository.PatientRepository;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -31,7 +30,7 @@ public class ProfileStatsService {
 
     @Transactional(readOnly = true, isolation = Isolation.READ_COMMITTED)
     public ProfileStatsResponse getProfileStatsPatient(long patientId) {
-        log.debug("Getting profile stats for patient ID: {}", patientId);
+        log.debug("Получение статистики в профиле для пациента с ID: {}", patientId);
         PatientEntity patient = patientRepository.findById(patientId)
                 .orElseThrow(() -> new ResourceNotFoundException("Patient", patientId));
 
@@ -49,7 +48,7 @@ public class ProfileStatsService {
 
     @Transactional(readOnly = true, isolation = Isolation.READ_COMMITTED)
     public ProfileStatsResponse getProfileStatsDoctor(long doctorId) {
-        log.debug("Getting profile stats for doctor ID: {}", doctorId);
+        log.debug("Получение статистики в профиле для доктора с ID: {}", doctorId);
         DoctorEntity doctor = doctorRepository.findById(doctorId)
                 .orElseThrow(() -> new ResourceNotFoundException("Doctor", doctorId));
 

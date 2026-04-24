@@ -70,7 +70,7 @@ public class JwtService {
                     .parseClaimsJws(token);
             return true;
         } catch (JwtException | IllegalArgumentException e) {
-            log.error("Invalid JWT token: {}", e.getMessage());
+            log.error("JWT токен не валиден: {}", e.getMessage());
             return false;
         }
     }

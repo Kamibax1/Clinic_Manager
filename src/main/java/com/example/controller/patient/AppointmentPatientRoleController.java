@@ -5,6 +5,7 @@ import com.example.model.dto.appointment.response.AppointmentFullInformationResp
 import com.example.model.dto.appointment.response.AppointmentShortInfoResponse;
 import com.example.model.dto.appointment.response.CreateAppointmentResponse;
 import com.example.service.AppointmentService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -21,7 +22,7 @@ public class AppointmentPatientRoleController {
     }
 
     @PostMapping
-    public ResponseEntity<CreateAppointmentResponse> save(@RequestBody CreateAppointmentRequest dto) {
+    public ResponseEntity<CreateAppointmentResponse> save(@Valid @RequestBody CreateAppointmentRequest dto) {
 
         CreateAppointmentResponse created = appointmentService.createAppointment(dto);
 

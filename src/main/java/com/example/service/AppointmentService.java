@@ -8,7 +8,6 @@ import com.example.model.dto.appointment.request.CreateAppointmentRequest;
 import com.example.model.entity.*;
 import com.example.model.enums.StatusEnum;
 import com.example.repository.*;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -33,7 +32,7 @@ public class AppointmentService {
 
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public CreateAppointmentResponse createAppointment(CreateAppointmentRequest appointment) {
-        log.info("Creating appointment for patient ID: {}, doctor ID: {}", appointment.getPatientId(), appointment.getDoctorId());
+        log.info("Создание записи для пациента с ID: {}, доктора с ID: {}", appointment.getPatientId(), appointment.getDoctorId());
         StatusEntity status = statusRepository.findByStatus(StatusEnum.PENDING);
         if (status == null) {
             throw new ResourceNotFoundException("Status", "name", StatusEnum.PENDING);
@@ -47,7 +46,7 @@ public class AppointmentService {
         AppointmentEntity entity = CreateAppointmentRequest.toEntity(appointment, status, patient, doctor);
         AppointmentEntity savedAppointment = appointmentRepository.save(entity);
 
-        log.info("Appointment created successfully with ID: {}", savedAppointment.getId());
+        log.info("Запись создалась успешно с ID: {}", savedAppointment.getId());
         return CreateAppointmentResponse.fromEntity(savedAppointment);
     }
 
@@ -88,7 +87,7 @@ public class AppointmentService {
 
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public AppointmentFullInformationResponse updateStatus(long id, StatusEnum status) {
-        log.info("Updating appointment ID: {} to status: {}", id, status);
+        log.info("Обновление статуса записи с ID: {} на: {}", id, status);
         AppointmentEntity appointment = appointmentRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Appointment", id));
         StatusEntity newStatus = statusRepository.findByStatus(status);
@@ -98,18 +97,16 @@ public class AppointmentService {
         appointment.setStatus(newStatus);
         appointmentRepository.save(appointment);
 
-        log.info("Appointment ID: {} status updated to: {}", id, status);
+        log.info("ID Записи: {} статус обновлен на: {}", id, status);
         return AppointmentFullInformationResponse.fromEntity(appointment);
     }
 
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public AppointmentFullInformationResponse updateDoctorAppointmentStatus(long appointmentId, UpdateAppointmentStatusRequest request) {
-        log.info("Doctor ID: {} updating appointment ID: {} to status: {}", request.getDoctorId(), appointmentId, request.getStatus());
+        log.info("ID Доктора: {} обновление статуса записи с ID: {} на: {}", request.getDoctorId(), appointmentId, request.getStatus());
         AppointmentEntity appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new ResourceNotFoundException("Appointment", appointmentId));
         if (appointment.getDoctor().getId() != request.getDoctorId()) {
-            log.warn("Doctor ID: {} attempted to update appointment ID: {} belonging to doctor ID: {}",
-                    request.getDoctorId(), appointmentId, appointment.getDoctor().getId());
             throw new AccessDeniedException("Appointment", appointmentId, "DOCTOR");
         }
 
@@ -121,7 +118,7 @@ public class AppointmentService {
         appointment.setStatus(newStatus);
         appointmentRepository.save(appointment);
 
-        log.info("Appointment ID: {} status updated to: {} by doctor ID: {}", appointmentId, request.getStatus(), request.getDoctorId());
+        log.info("ID Записи: {} статус обновлен на: {} от врача с ID: {}", appointmentId, request.getStatus(), request.getDoctorId());
         return AppointmentFullInformationResponse.fromEntity(appointment);
     }
 
@@ -131,7 +128,7 @@ public class AppointmentService {
             throw new ResourceNotFoundException("Appointment", id);
         }
         appointmentRepository.deleteById(id);
-        log.info("Appointment ID: {} deleted successfully", id);
+        log.info("ID Записи: {} успешно удален", id);
     }
 
     public boolean existsById(long id) {

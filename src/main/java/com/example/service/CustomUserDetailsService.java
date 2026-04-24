@@ -3,11 +3,14 @@ package com.example.service;
 import com.example.model.entity.UserEntity;
 import com.example.repository.UserRepository;
 import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import java.util.Collections;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
@@ -27,10 +30,14 @@ public class CustomUserDetailsService implements UserDetailsService {
             throw new DisabledException("User is disabled: " + username);
         }
 
+        SimpleGrantedAuthority authority = new SimpleGrantedAuthority(
+                "ROLE_" + userEntity.getRole().getName().name()
+        );
+
         return User.builder()
                 .username(userEntity.getUsername())
                 .password(userEntity.getPassword())
-                .authorities(userEntity.getRole().getName().name())
+                .authorities(Collections.singletonList(authority))
                 .accountExpired(false)
                 .accountLocked(false)
                 .credentialsExpired(false)

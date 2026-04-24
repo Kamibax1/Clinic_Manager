@@ -3,7 +3,6 @@ package com.example.controller.doctor;
 import com.example.model.dto.appointment.request.UpdateAppointmentStatusRequest;
 import com.example.model.dto.appointment.response.AppointmentFullInformationResponse;
 import com.example.model.dto.appointment.response.AppointmentShortInfoResponse;
-import com.example.model.enums.StatusEnum;
 import com.example.service.AppointmentService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,9 +26,9 @@ public class AppointmentDoctorRoleController {
         return ResponseEntity.ok(appointments);
     }
 
-    @GetMapping("/information/short/{name}")
-    public ResponseEntity<List<AppointmentShortInfoResponse>> findAllShortInfoByDoctorName(@PathVariable String name) {
-        List<AppointmentShortInfoResponse> appointments = appointmentService.findAllShortInfoByDoctorName(name);
+    @GetMapping("/information/short/doctor/{doctorName}")
+    public ResponseEntity<List<AppointmentShortInfoResponse>> findAllShortInfoByDoctorName(@PathVariable String doctorName) {
+        List<AppointmentShortInfoResponse> appointments = appointmentService.findAllShortInfoByDoctorName(doctorName);
         if (appointments.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
