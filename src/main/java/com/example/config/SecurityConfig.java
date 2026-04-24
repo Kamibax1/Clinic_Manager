@@ -45,6 +45,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/patient/**").hasRole("PATIENT")
                         .requestMatchers("/api/doctor/**").hasRole("DOCTOR")
+                        .requestMatchers("/v3/api-docs/**").permitAll()
+                        .requestMatchers("/swagger-ui/**").permitAll()
                         .anyRequest().hasRole("ADMIN")
                 )
                 .userDetailsService(userDetailsService)
