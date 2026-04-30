@@ -33,8 +33,8 @@ public class SecurityConfig {
     @Bean
     public RoleHierarchy roleHierarchy() {
         return RoleHierarchyImpl.withDefaultRolePrefix()
-                .role(RoleEnum.ADMIN.name()).implies(RoleEnum.DOCTOR.name())
                 .role(RoleEnum.DOCTOR.name()).implies(RoleEnum.PATIENT.name())
+                .role(RoleEnum.ADMIN.name()).implies(RoleEnum.DOCTOR.name())
                 .build();
     }
 

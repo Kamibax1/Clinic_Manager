@@ -1,0 +1,26 @@
+# Игнорируем файлы сборки
+target/
+*.jar
+*.war
+
+# Игнорируем системные файлы
+.git/
+.gitignore
+.idea/
+*.iml
+.DS_Store
+
+# Игнорируем документацию
+*.md
+README.md
+docs/
+
+# Игнорируем временные файлы
+*.log
+*.tmp
+temp/
+
+# Игнорируем Docker файлы (чтобы не пересобирать образ при их изменении)
+Dockerfile
+.dockerignore
+docker-compose.yml

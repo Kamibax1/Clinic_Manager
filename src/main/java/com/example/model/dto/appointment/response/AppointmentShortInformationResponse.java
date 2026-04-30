@@ -10,7 +10,7 @@ import lombok.Setter;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-public class AppointmentShortInfoResponse {
+public class AppointmentShortInformationResponse {
     @Id
     @Setter @Getter
     @JsonProperty("id_appointment_short_info")
@@ -32,10 +32,10 @@ public class AppointmentShortInfoResponse {
     @Getter @Setter
     private StatusDTO status;
 
-    public AppointmentShortInfoResponse() {
+    public AppointmentShortInformationResponse() {
     }
 
-    public AppointmentShortInfoResponse(Long id, LocalDate date, LocalTime time, String symptoms, String doctorName, StatusDTO status) {
+    public AppointmentShortInformationResponse(Long id, LocalDate date, LocalTime time, String symptoms, String doctorName, StatusDTO status) {
         this.id = id;
         this.date = date;
         this.time = time;
@@ -44,8 +44,8 @@ public class AppointmentShortInfoResponse {
         this.status = status;
     }
 
-    public static AppointmentShortInfoResponse fromEntity(AppointmentEntity entity) {
-        AppointmentShortInfoResponse dto = new AppointmentShortInfoResponse();
+    public static AppointmentShortInformationResponse fromEntity(AppointmentEntity entity) {
+        AppointmentShortInformationResponse dto = new AppointmentShortInformationResponse();
         dto.id = entity.getId();
         dto.date = entity.getDate();
         dto.time = entity.getTime();

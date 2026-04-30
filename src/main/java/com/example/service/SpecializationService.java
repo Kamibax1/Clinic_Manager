@@ -16,7 +16,7 @@ public class SpecializationService {
     }
 
     @Transactional(readOnly = true, isolation = Isolation.READ_COMMITTED)
-    public List<SpecializationDTO> findAllSpecializations() {
+    public List<SpecializationDTO> findAll() {
         return specializationRepository.findAll().stream()
                 .map(SpecializationDTO::fromEntity)
                 .toList();

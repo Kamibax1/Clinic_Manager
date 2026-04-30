@@ -1,4 +1,4 @@
-package com.example.model.dto;
+package com.example.model.dto.stats;
 
 import lombok.Getter;
 import lombok.Setter;

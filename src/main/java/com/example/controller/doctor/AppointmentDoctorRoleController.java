@@ -1,9 +1,13 @@
 package com.example.controller.doctor;
 
 import com.example.model.dto.appointment.request.UpdateAppointmentStatusRequest;
+import com.example.model.dto.appointment.request.UpdateAppointmentSymptomsRequest;
 import com.example.model.dto.appointment.response.AppointmentFullInformationResponse;
-import com.example.model.dto.appointment.response.AppointmentShortInfoResponse;
+import com.example.model.dto.appointment.response.AppointmentShortInformationResponse;
 import com.example.service.AppointmentService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,33 +15,40 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/doctor/appointments")
+@Tag(name = "Записи")
 public class AppointmentDoctorRoleController {
     private final AppointmentService appointmentService;
     public AppointmentDoctorRoleController(AppointmentService appointmentService) {
         this.appointmentService = appointmentService;
     }
 
+    @Operation(summary = "Получить все записи в виде краткой информации")
+    @SecurityRequirement(name = "bearer-jwt")
     @GetMapping("/information/short")
-    public ResponseEntity<List<AppointmentShortInfoResponse>> findAllShortInfo() {
-        List<AppointmentShortInfoResponse> appointments = appointmentService.findAllShortInfo();
+    public ResponseEntity<List<AppointmentShortInformationResponse>> findAllShortInfo() {
+        List<AppointmentShortInformationResponse> appointments = appointmentService.findAllShortInfo();
         if (appointments.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(appointments);
     }
 
+    @Operation(summary = "Получить все записи по части ФИО врача в виде краткой информации")
+    @SecurityRequirement(name = "bearer-jwt")
     @GetMapping("/information/short/doctor/{doctorName}")
-    public ResponseEntity<List<AppointmentShortInfoResponse>> findAllShortInfoByDoctorName(@PathVariable String doctorName) {
-        List<AppointmentShortInfoResponse> appointments = appointmentService.findAllShortInfoByDoctorName(doctorName);
+    public ResponseEntity<List<AppointmentShortInformationResponse>> findAllShortInfoByDoctorName(@PathVariable String doctorName) {
+        List<AppointmentShortInformationResponse> appointments = appointmentService.findAllShortInfoByDoctorName(doctorName);
         if (appointments.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(appointments);
     }
 
+    @Operation(summary = "Получить запись по ID в виде краткой информации")
+    @SecurityRequirement(name = "bearer-jwt")
     @GetMapping("/information/short/{id}")
-    public ResponseEntity<List<AppointmentShortInfoResponse>> findShortInfoById(@PathVariable long id) {
-        List<AppointmentShortInfoResponse> appointments = appointmentService.findAllShortInfoByDoctorId(id);
+    public ResponseEntity<List<AppointmentShortInformationResponse>> findShortInfoById(@PathVariable long id) {
+        List<AppointmentShortInformationResponse> appointments = appointmentService.findAllShortInfoByDoctorId(id);
 
         if (appointments.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -46,11 +57,23 @@ public class AppointmentDoctorRoleController {
         return ResponseEntity.ok(appointments);
     }
 
-    @PutMapping("/information/{id}")
+    @Operation(summary = "Изменить статус записи, к которой привязан определенный врач")
+    @SecurityRequirement(name = "bearer-jwt")
+    @PutMapping("/information/status/{id}")
     public ResponseEntity<AppointmentFullInformationResponse> updateDoctorAppointmentStatus(
             @PathVariable Long id,
             @RequestBody UpdateAppointmentStatusRequest request
             ) {
         return ResponseEntity.ok(appointmentService.updateDoctorAppointmentStatus(id, request));
+    }
+
+    @Operation(summary = "Изменить симптомы записи, к которой привязан определенный врач")
+    @SecurityRequirement(name = "bearer-jwt")
+    @PutMapping("/information/symptom/{id}")
+    public ResponseEntity<AppointmentFullInformationResponse> updateDoctorAppointmentSymptom(
+            @PathVariable Long id,
+            @RequestBody UpdateAppointmentSymptomsRequest request
+    ) {
+        return ResponseEntity.ok(appointmentService.updateDoctorAppointmentSymptom(id, request));
     }
 }
