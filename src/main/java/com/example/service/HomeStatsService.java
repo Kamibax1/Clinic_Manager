@@ -1,6 +1,6 @@
 package com.example.service;
 
-import com.example.model.dto.HomeStatsResponse;
+import com.example.model.dto.stats.HomeStatsResponse;
 import com.example.model.enums.StatusEnum;
 import com.example.repository.*;
 import org.springframework.stereotype.Service;

@@ -13,27 +13,24 @@ import java.util.List;
 @Repository
 public interface AppointmentRepository extends JpaRepository<AppointmentEntity,Long> {
 
-    List<AppointmentEntity> findAllByPatientId(@Param("patientId") Long patientId);
+    List<AppointmentEntity> findAllByPatientId(Long patientId);
 
-    List<AppointmentEntity> findAllByDoctorId(@Param("id") Long id);
+    List<AppointmentEntity> findAllByDoctorId(Long id);
 
-    int countByPatientId(@Param("patientId") Long patientId);
+    List<AppointmentEntity> findAllByStatusStatus(StatusEnum status);
 
-    int countByDoctorId(@Param("id") Long id);
+    int countByPatientId(Long patientId);
 
-    int countByStatusStatus(@Param("status") StatusEnum status);
+    int countByDoctorId(Long id);
 
-    int countByDate(@Param("date") LocalDate date);
+    int countByStatusStatus(StatusEnum status);
 
-    int countByPatientIdAndStatusStatusIn(
-            @Param("patientId") Long patientId,
-            @Param("statuses") List<StatusEnum> statuses
+    int countByDate(LocalDate date);
+
+    int countByPatientIdAndStatusStatusIn(Long patientId, List<StatusEnum> statuses
     );
 
-    int countByDoctorIdAndStatusStatusIn(
-            @Param("doctorId") Long doctorId,
-            @Param("statuses") List<StatusEnum> statuses
-    );
+    int countByDoctorIdAndStatusStatusIn(Long doctorId, List<StatusEnum> statuses);
 
     @Query("SELECT a FROM AppointmentEntity a WHERE " +
             "LOWER(a.doctor.firstName) LIKE LOWER(CONCAT('%', :doctorName, '%')) OR " +

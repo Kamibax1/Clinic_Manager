@@ -1,20 +1,27 @@
 package com.example.controller.admin;
 
+import com.example.exception.ResourceNotFoundException;
 import com.example.model.dto.appointment.response.AppointmentFullInformationResponse;
 import com.example.model.enums.StatusEnum;
 import com.example.service.AppointmentService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/admin/appointments")
+@Tag(name = "Записи")
 public class AppointmentAdminRoleController {
     private final AppointmentService appointmentService;
     public AppointmentAdminRoleController(AppointmentService appointmentService) {
         this.appointmentService = appointmentService;
     }
 
+    @Operation(summary = "Удалить запись по ID")
+    @SecurityRequirement(name = "bearer-jwt")
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteById(@PathVariable Long id) {
@@ -27,12 +34,18 @@ public class AppointmentAdminRoleController {
         }
     }
 
+    @Operation(summary = "Обновить статус записи")
+    @SecurityRequirement(name = "bearer-jwt")
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/information/full/{id}")
     public ResponseEntity<AppointmentFullInformationResponse> updateStatus(
             @PathVariable Long id,
             @RequestBody StatusEnum status
     ) {
-        return ResponseEntity.ok(appointmentService.updateStatus(id, status));
+        try {
+            return ResponseEntity.ok(appointmentService.updateStatus(id, status));
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

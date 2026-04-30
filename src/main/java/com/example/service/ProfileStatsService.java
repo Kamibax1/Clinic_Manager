@@ -1,7 +1,7 @@
 package com.example.service;
 
 import com.example.exception.ResourceNotFoundException;
-import com.example.model.dto.ProfileStatsResponse;
+import com.example.model.dto.stats.ProfileStatsResponse;
 import com.example.model.entity.DoctorEntity;
 import com.example.model.entity.PatientEntity;
 import com.example.model.enums.StatusEnum;

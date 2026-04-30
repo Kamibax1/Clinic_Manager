@@ -11,6 +11,10 @@ import java.util.stream.Collectors;
 
 public class DoctorFullInformationResponse {
     @Getter @Setter
+    @JsonProperty("id_doctor_full_information")
+    private Long id;
+
+    @Getter @Setter
     @JsonProperty("first_name")
     private String firstName;
 
@@ -36,7 +40,8 @@ public class DoctorFullInformationResponse {
     public DoctorFullInformationResponse() {
     }
 
-    public DoctorFullInformationResponse(String firstName, String lastName, String middleName, int experienceYears, String phoneNumber, Set<SpecializationDTO> specializations) {
+    public DoctorFullInformationResponse(Long id, String firstName, String lastName, String middleName, int experienceYears, String phoneNumber, Set<SpecializationDTO> specializations) {
+        this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.middleName = middleName;
@@ -47,6 +52,7 @@ public class DoctorFullInformationResponse {
 
     public static DoctorFullInformationResponse fromEntity(DoctorEntity entity) {
         DoctorFullInformationResponse dto = new DoctorFullInformationResponse();
+        dto.id = entity.getId();
         dto.firstName = entity.getFirstName();
         dto.lastName = entity.getLastName();
         dto.middleName = entity.getMiddleName();

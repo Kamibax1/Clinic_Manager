@@ -6,6 +6,9 @@ import com.example.model.entity.UserEntity;
 import com.example.repository.UserRepository;
 import com.example.service.JwtService;
 import com.example.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -19,6 +22,7 @@ import com.example.exception.ValidationException;
 @Slf4j
 @RestController
 @RequestMapping("api/auth")
+@Tag(name = "Аутентификация")
 public class AuthController {
     private final UserService userService;
     private final AuthenticationManager authenticationManager;
@@ -32,6 +36,8 @@ public class AuthController {
         this.userRepository = userRepository;
     }
 
+    @Operation(summary = "Войти в приложения")
+    @SecurityRequirement(name = "bearer-jwt")
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
         log.info("Login attempt for username: {}", request.getUsername());
@@ -53,6 +59,8 @@ public class AuthController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(summary = "Зарегистрироваться в приложение")
+    @SecurityRequirement(name = "bearer-jwt")
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request) throws ValidationException {
         log.info("Registration attempt for username: {}", request.getUsername());
@@ -69,6 +77,8 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    @Operation(summary = "Получить текущего пользователя")
+    @SecurityRequirement(name = "bearer-jwt")
     @GetMapping("/me")
     public ResponseEntity<UserResponse> getCurrentUser(Authentication authentication) {
         UserEntity userEntity = userRepository.findByUsername(authentication.getName());
