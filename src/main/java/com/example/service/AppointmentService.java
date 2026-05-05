@@ -80,8 +80,15 @@ public class AppointmentService {
     }
 
     @Transactional(readOnly = true, isolation = Isolation.READ_COMMITTED)
-    public List<AppointmentShortInformationResponse> findAllShortInfoByDoctorName(String doctorName) {
-        return appointmentRepository.findAllShortInfoByDoctorName(doctorName).stream()
+    public List<AppointmentShortInformationResponse> findAllShortInfoByDoctorName(String partDoctorName) {
+        return appointmentRepository.findAllByDoctorName(partDoctorName).stream()
+                .map(AppointmentShortInformationResponse::fromEntity)
+                .toList();
+    }
+
+    @Transactional(readOnly = true, isolation = Isolation.READ_COMMITTED)
+    public List<AppointmentShortInformationResponse> findAllShortInfoByPatientIdAndPartDoctorName(Long patientId, String partDoctorName) {
+        return appointmentRepository.findAllByPatientIdAndPartDoctorName(patientId, partDoctorName).stream()
                 .map(AppointmentShortInformationResponse::fromEntity)
                 .toList();
     }
@@ -93,9 +100,16 @@ public class AppointmentService {
                 .toList();
     }
 
+    @Transactional(readOnly = true, isolation = Isolation.READ_COMMITTED)
+    public List<AppointmentShortInformationResponse> findAllShortInfoByPatientIdAndStatus(Long patientId, StatusEnum status) {
+        return appointmentRepository.findAllByPatientIdAndStatusStatus(patientId, status).stream()
+                .map(AppointmentShortInformationResponse::fromEntity)
+                .toList();
+    }
+
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public AppointmentFullInformationResponse updateStatus(long id, StatusEnum status) {
-        log.info("Обновление статуса записи с ID: {} на: {}", id, status);
+        log.info("Обновление статуса у записи с ID: {} на: {}", id, status);
         AppointmentEntity appointment = appointmentRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Appointment", id));
         StatusEntity newStatus = statusRepository.findByStatus(status);
@@ -111,7 +125,7 @@ public class AppointmentService {
 
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public AppointmentFullInformationResponse updateDoctorAppointmentStatus(long appointmentId, UpdateAppointmentStatusRequest request) {
-        log.info("ID Доктора: {} обновление статуса записи с ID: {} на: {}", request.getDoctorId(), appointmentId, request.getStatus());
+        log.info("ID Доктора: {} обновление статуса у записи с ID: {} на: {}", request.getDoctorId(), appointmentId, request.getStatus());
         AppointmentEntity appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new ResourceNotFoundException("Appointment", appointmentId));
         if (appointment.getDoctor().getId() != request.getDoctorId()) {
@@ -131,18 +145,31 @@ public class AppointmentService {
     }
 
     @Transactional(isolation = Isolation.READ_COMMITTED)
-    public AppointmentFullInformationResponse updateDoctorAppointmentSymptom(long appointmentId, UpdateAppointmentSymptomsRequest request) {
-        log.info("ID Доктора: {} обновление симптомов записи с ID: {} на: {}", request.getDoctorId(), appointmentId, request.getSymptom());
+    public AppointmentFullInformationResponse updateSymptoms(long id, String symptoms) {
+        log.info("Обновление симптомов у записи с ID: {} на: {}", id, symptoms);
+        AppointmentEntity appointment = appointmentRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Appointment", id));
+
+        appointment.setSymptoms(symptoms);
+        appointmentRepository.save(appointment);
+
+        log.info("У записи с ID: {} симптомы обновлен на: {}", id, symptoms);
+        return AppointmentFullInformationResponse.fromEntity(appointment);
+    }
+
+    @Transactional(isolation = Isolation.READ_COMMITTED)
+    public AppointmentFullInformationResponse updateDoctorAppointmentSymptoms(long appointmentId, UpdateAppointmentSymptomsRequest request) {
+        log.info("ID Доктора: {} обновление симптомов у записи с ID: {} на: {}", request.getDoctorId(), appointmentId, request.getSymptoms());
         AppointmentEntity appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new ResourceNotFoundException("Appointment", appointmentId));
         if (appointment.getDoctor().getId() != request.getDoctorId()) {
             throw new AccessDeniedException("Appointment", appointmentId, "DOCTOR");
         }
 
-        appointment.setSymptoms(request.getSymptom());
+        appointment.setSymptoms(request.getSymptoms());
         appointmentRepository.save(appointment);
 
-        log.info("У записи с ID: {} симптомы обновлены на: {} от врача с ID: {}", appointmentId, request.getSymptom(), request.getDoctorId());
+        log.info("У записи с ID: {} симптомы обновлены на: {} от врача с ID: {}", appointmentId, request.getSymptoms(), request.getDoctorId());
         return AppointmentFullInformationResponse.fromEntity(appointment);
     }
 

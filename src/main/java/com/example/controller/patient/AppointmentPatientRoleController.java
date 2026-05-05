@@ -60,11 +60,28 @@ public class AppointmentPatientRoleController {
         return ResponseEntity.ok(appointmentService.findFullInfoById(id));
     }
 
-    @Operation(summary = "Получить все записи по их статусу, в виде краткой информации")
+    @Operation(summary = "Получить все записи по ID пациента и части ФИО врача в виде краткой информации")
     @SecurityRequirement(name = "bearer-jwt")
-    @GetMapping("/information/short/status/{status}")
-    public ResponseEntity<List<AppointmentShortInformationResponse>> findAllShortInfoByStatus(@PathVariable StatusEnum status) {
-        List<AppointmentShortInformationResponse> appointments = appointmentService.findAllShortInfoByStatus(status);
+    @GetMapping("/information/short/patient/{patientId}/doctor/{partDoctorName}")
+    public ResponseEntity<List<AppointmentShortInformationResponse>> findAllShortInfoByPatientIdAndDoctorName(
+            @PathVariable long patientId,
+            @PathVariable String partDoctorName
+    ) {
+        List<AppointmentShortInformationResponse> appointments = appointmentService.findAllShortInfoByPatientIdAndPartDoctorName(patientId, partDoctorName);
+        if (appointments.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(appointments);
+    }
+
+    @Operation(summary = "Получить все записи по ID пациента и их статусу , в виде краткой информации")
+    @SecurityRequirement(name = "bearer-jwt")
+    @GetMapping("/information/short/patient/{patientId}/status/{status}")
+    public ResponseEntity<List<AppointmentShortInformationResponse>> findAllShortInfoByStatus(
+            @PathVariable long patientId,
+            @PathVariable StatusEnum status
+    ) {
+        List<AppointmentShortInformationResponse> appointments = appointmentService.findAllShortInfoByPatientIdAndStatus(patientId, status);
         if (appointments.isEmpty()) {
             return ResponseEntity.notFound().build();
         }

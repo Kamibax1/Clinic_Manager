@@ -10,13 +10,13 @@ public class UpdateAppointmentSymptomsRequest {
     private int doctorId;
 
     @Getter @Setter
-    private String symptom;
+    private String symptoms;
 
     public UpdateAppointmentSymptomsRequest() {
     }
 
-    public UpdateAppointmentSymptomsRequest(int doctorId, String symptom) {
+    public UpdateAppointmentSymptomsRequest(int doctorId, String symptoms) {
         this.doctorId = doctorId;
-        this.symptom = symptom;
+        this.symptoms = symptoms;
     }
 }

@@ -1,6 +1,9 @@
 package com.example.service;
 
+import com.example.exception.AccessDeniedException;
 import com.example.exception.ResourceNotFoundException;
+import com.example.model.dto.doctor.response.DoctorShortInfoResponse;
+import com.example.model.dto.patient.response.PatientShortInfoResponse;
 import com.example.model.dto.user.request.CreateUserRequest;
 import com.example.model.dto.doctor.response.DoctorFullInformationResponse;
 import com.example.model.dto.security.RegisterRequest;
@@ -18,12 +21,17 @@ import com.example.repository.PatientRepository;
 import com.example.repository.RoleRepository;
 import com.example.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import com.example.exception.ValidationException;
 
+import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.List;
 
 @Slf4j
@@ -135,6 +143,19 @@ public class UserService {
         entity.setRole(userRole);
 
         UserEntity saved = userRepository.save(entity);
+        PatientEntity patient = new PatientEntity();
+        patient.setUser(saved);
+
+        patient.setFirstName("Не указано");
+        patient.setLastName("Не указано");
+        patient.setMiddleName("Не указано");
+        patient.setDateOfBirth(LocalDate.now());
+        patient.setPhoneNumber("Не указано");
+        patient.setGender("Не указано");
+        patient.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+        patient.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
+
+        patientRepository.save(patient);
         log.info("Пользователь зарегистрировался успешно: username='{}', id={}", saved.getUsername(), saved.getId());
         return UserResponse.fromEntity(saved);
     }
@@ -164,13 +185,13 @@ public class UserService {
     }
 
     private UserFullInfoResponse findRoleUser(UserEntity userEntity, UserFullInfoResponse fullInfo) {
-        DoctorEntity doctorEntity = doctorRepository.findByUser(userEntity).orElse(null);
+        DoctorEntity doctorEntity = doctorRepository.findByUser_Id(userEntity.getId()).orElse(null);
         if (doctorEntity != null) {
             fullInfo.setProfileType("DOCTOR");
             fullInfo.setDoctorInfo(DoctorFullInformationResponse.fromEntity(doctorEntity));
             return fullInfo;
         }
-        PatientEntity patientEntity = patientRepository.findByUser(userEntity).orElse(null);
+        PatientEntity patientEntity = patientRepository.findByUserId(userEntity.getId()).orElse(null);
         if (patientEntity != null) {
             fullInfo.setProfileType("PATIENT");
             fullInfo.setPatientInfo(PatientFullInfoForAdminResponse.fromEntity(patientEntity));
@@ -178,6 +199,22 @@ public class UserService {
         }
         fullInfo.setProfileType("ADMIN");
         return fullInfo;
+    }
+
+    public DoctorShortInfoResponse findDoctorByUsername(String username) {
+        UserEntity userEntity = CheckUsernameOwnership(username);
+        DoctorEntity doctorEntity = doctorRepository.findByUser_Id(userEntity.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Doctor", "ID", userEntity.getId()));
+
+        return DoctorShortInfoResponse.fromEntity(doctorEntity);
+    }
+
+    public PatientShortInfoResponse findPatientByUsername(String username) {
+        UserEntity userEntity = CheckUsernameOwnership(username);
+        PatientEntity patientEntity = patientRepository.findByUserId(userEntity.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Patient", "ID", userEntity.getId()));
+
+        return PatientShortInfoResponse.fromEntity(patientEntity);
     }
 
     public UserResponse findByUsername(String username) {
@@ -190,6 +227,26 @@ public class UserService {
 
     public boolean checkPassword(String rawPassword, String encodedPassword) {
         return passwordEncoder.matches(rawPassword, encodedPassword);
+    }
+
+    private UserEntity CheckUsernameOwnership(String username) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new AccessDeniedException("User not authenticated");
+        }
+
+        String currentUsername = authentication.getName();
+
+        if (!currentUsername.equals(username)) {
+            throw new AccessDeniedException("You can only access your own data");
+        }
+
+        UserEntity userEntity = userRepository.findByUsername(username);
+        if (userEntity == null) {
+            throw new ResourceNotFoundException("User", "username", username);
+        }
+        return userEntity;
     }
 
     private void checkData(String username, String email) {

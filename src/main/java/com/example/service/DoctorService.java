@@ -43,7 +43,7 @@ public class DoctorService {
 
     @Transactional(readOnly = true, isolation = Isolation.READ_COMMITTED)
     public List<DoctorShortInfoResponse> findAllShortInfoBySpecialization(String specialization) {
-        return doctorRepository.findBySpecializations_NameContaining(specialization).stream()
+        return doctorRepository.findAllBySpecializationsName(specialization).stream()
                 .map(DoctorShortInfoResponse::fromEntity)
                 .toList();
     }

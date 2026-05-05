@@ -34,16 +34,31 @@ public class AppointmentAdminRoleController {
         }
     }
 
-    @Operation(summary = "Обновить статус записи")
+    @Operation(summary = "Обновить статус у любой записи")
     @SecurityRequirement(name = "bearer-jwt")
     @PreAuthorize("hasRole('ADMIN')")
-    @PutMapping("/information/full/{id}")
+    @PutMapping("/information/full/status/{id}")
     public ResponseEntity<AppointmentFullInformationResponse> updateStatus(
             @PathVariable Long id,
             @RequestBody StatusEnum status
     ) {
         try {
             return ResponseEntity.ok(appointmentService.updateStatus(id, status));
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @Operation(summary = "Обновить симптомы у любой записи")
+    @SecurityRequirement(name = "bearer-jwt")
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/information/full/symptoms/{id}")
+    public ResponseEntity<AppointmentFullInformationResponse> updateSymptoms(
+            @PathVariable Long id,
+            @RequestBody String symptoms
+    ) {
+        try {
+            return ResponseEntity.ok(appointmentService.updateSymptoms(id, symptoms));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.notFound().build();
         }

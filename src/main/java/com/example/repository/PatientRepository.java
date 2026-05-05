@@ -13,11 +13,11 @@ import java.util.Optional;
 
 @Repository
 public interface PatientRepository extends JpaRepository<PatientEntity, Long> {
-    Optional<PatientEntity> findByUser(UserEntity user);
+    Optional<PatientEntity> findByUserId(Long userId);
 
     @Query("SELECT p FROM PatientEntity p WHERE " +
             "LOWER(p.firstName) LIKE LOWER(CONCAT('%', :name, '%')) OR " +
             "LOWER(p.lastName) LIKE LOWER(CONCAT('%', :name, '%')) OR " +
             "LOWER(p.middleName) LIKE LOWER(CONCAT('%', :name, '%'))")
-    List<PatientEntity> findAllShortInfoByName(@Param("name") String name);
+    List<PatientEntity> findAllByName(@Param("name") String name);
 }

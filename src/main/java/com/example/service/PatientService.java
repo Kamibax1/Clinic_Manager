@@ -36,7 +36,7 @@ public class PatientService {
 
     @Transactional(readOnly = true, isolation = Isolation.READ_COMMITTED)
     public List<PatientShortInfoResponse> findAllShortInfoByName(String name) {
-        return patientRepository.findAllShortInfoByName(name).stream()
+        return patientRepository.findAllByName(name).stream()
                 .map(PatientShortInfoResponse::fromEntity)
                 .toList();
     }

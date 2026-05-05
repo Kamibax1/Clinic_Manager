@@ -19,6 +19,8 @@ public interface AppointmentRepository extends JpaRepository<AppointmentEntity,L
 
     List<AppointmentEntity> findAllByStatusStatus(StatusEnum status);
 
+    List<AppointmentEntity> findAllByPatientIdAndStatusStatus(Long patientId, StatusEnum status);
+
     int countByPatientId(Long patientId);
 
     int countByDoctorId(Long id);
@@ -33,8 +35,18 @@ public interface AppointmentRepository extends JpaRepository<AppointmentEntity,L
     int countByDoctorIdAndStatusStatusIn(Long doctorId, List<StatusEnum> statuses);
 
     @Query("SELECT a FROM AppointmentEntity a WHERE " +
-            "LOWER(a.doctor.firstName) LIKE LOWER(CONCAT('%', :doctorName, '%')) OR " +
-            "LOWER(a.doctor.lastName) LIKE LOWER(CONCAT('%', :doctorName, '%')) OR " +
-            "LOWER(a.doctor.middleName) LIKE LOWER(CONCAT('%', :doctorName, '%'))")
-    List<AppointmentEntity> findAllShortInfoByDoctorName(@Param("doctorName") String doctorName);
+            "a.patient.id = :patientId AND (" +
+            "LOWER(a.doctor.firstName) LIKE LOWER(CONCAT('%', :partDoctorName, '%')) OR " +
+            "LOWER(a.doctor.lastName) LIKE LOWER(CONCAT('%', :partDoctorName, '%')) OR " +
+            "LOWER(a.doctor.middleName) LIKE LOWER(CONCAT('%', :partDoctorName, '%')))")
+    List<AppointmentEntity> findAllByPatientIdAndPartDoctorName(
+            @Param("patientId") Long patientId,
+            @Param("partDoctorName") String partDoctorName
+    );
+
+    @Query("SELECT a FROM AppointmentEntity a WHERE " +
+            "LOWER(a.doctor.firstName) LIKE LOWER(CONCAT('%', :partDoctorName, '%')) OR " +
+            "LOWER(a.doctor.lastName) LIKE LOWER(CONCAT('%', :partDoctorName, '%')) OR " +
+            "LOWER(a.doctor.middleName) LIKE LOWER(CONCAT('%', :partDoctorName, '%'))")
+    List<AppointmentEntity> findAllByDoctorName(@Param("partDoctorName") String partDoctorName);
 }

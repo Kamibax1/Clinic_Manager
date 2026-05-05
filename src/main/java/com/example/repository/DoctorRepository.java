@@ -1,7 +1,6 @@
 package com.example.repository;
 
 import com.example.model.entity.DoctorEntity;
-import com.example.model.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -12,9 +11,9 @@ import java.util.Optional;
 
 @Repository
 public interface DoctorRepository extends JpaRepository<DoctorEntity, Long> {
-    List<DoctorEntity> findBySpecializations_NameContaining(String specialization);
+    List<DoctorEntity> findAllBySpecializationsName(String specialization);
 
-    Optional<DoctorEntity> findByUser(UserEntity user);
+    Optional<DoctorEntity> findByUser_Id(Long userId);
 
     @Query("SELECT d FROM DoctorEntity d WHERE " +
             "LOWER(d.firstName) LIKE LOWER(CONCAT('%', :name, '%')) OR " +
