@@ -55,6 +55,18 @@ public class UserAdminRoleController {
         return ResponseEntity.ok(users);
     }
 
+    @Operation(summary = "Получить всех пользователей по их активности (активных или заблокированных)")
+    @SecurityRequirement(name = "bearer-jwt")
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/enabled/{enabled}")
+    public ResponseEntity<List<UserResponse>> findAllEnabled(@PathVariable("enabled") Boolean enabled) {
+        List<UserResponse> users = userService.findAllByEnabled(enabled);
+        if (users.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(users);
+    }
+
     @Operation(summary = "Получить всех пользователей по их роли")
     @SecurityRequirement(name = "bearer-jwt")
     @PreAuthorize("hasRole('ADMIN')")
@@ -67,48 +79,24 @@ public class UserAdminRoleController {
         return ResponseEntity.ok(users);
     }
 
-    @Operation(summary = "Получить всех пользователей, отсортированных по имени пользователя по возрастанию")
+    @Operation(summary = "Получить всех пользователей, отсортированных по имени пользователя")
     @SecurityRequirement(name = "bearer-jwt")
     @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/order/username/asc")
-    public ResponseEntity<List<UserResponse>> findAllByOrderByUsernameAsc() {
-        List<UserResponse> users = userService.findAllByOrderByUsernameAsc();
+    @GetMapping("/order/username")
+    public ResponseEntity<List<UserResponse>> findAllByOrderByUsername() {
+        List<UserResponse> users = userService.findAllByOrderByUsername();
         if (users.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(users);
     }
 
-    @Operation(summary = "Получить всех пользователей, отсортированных по имени пользователя по убыванию")
+    @Operation(summary = "Получить всех пользователей, отсортированных по почте пользователя")
     @SecurityRequirement(name = "bearer-jwt")
     @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/order/username/desc")
-    public ResponseEntity<List<UserResponse>> findAllByOrderByUsernameDesc() {
-        List<UserResponse> users = userService.findAllByOrderByUsernameDesc();
-        if (users.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(users);
-    }
-
-    @Operation(summary = "Получить всех пользователей, отсортированных по почте пользователя по возрастанию")
-    @SecurityRequirement(name = "bearer-jwt")
-    @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/order/email/asc")
-    public ResponseEntity<List<UserResponse>> findAllByOrderByEmailAsc() {
-        List<UserResponse> users = userService.findAllByOrderByEmailAsc();
-        if (users.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(users);
-    }
-
-    @Operation(summary = "Получить всех пользователей, отсортированных по почте пользователя по убыванию")
-    @SecurityRequirement(name = "bearer-jwt")
-    @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/order/email/desc")
-    public ResponseEntity<List<UserResponse>> findAllByOrderByEmailDesc() {
-        List<UserResponse> users = userService.findAllByOrderByEmailDesc();
+    @GetMapping("/order/email")
+    public ResponseEntity<List<UserResponse>> findAllByOrderByEmail() {
+        List<UserResponse> users = userService.findAllByOrderByEmail();
         if (users.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
@@ -146,6 +134,21 @@ public class UserAdminRoleController {
     public ResponseEntity<UserResponse> updateEnabled(@PathVariable long id) {
         try {
             return ResponseEntity.ok(userService.updateEnabled(id));
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @Operation(summary = "Изменить роль у пользователя")
+    @SecurityRequirement(name = "bearer-jwt")
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/role/{id}")
+    public ResponseEntity<UserResponse> updateRole(
+            @PathVariable long id,
+            @RequestBody RoleEnum role
+    ) {
+        try {
+            return ResponseEntity.ok(userService.updateRole(id, role));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.notFound().build();
         }

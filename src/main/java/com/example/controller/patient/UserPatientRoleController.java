@@ -1,6 +1,7 @@
 package com.example.controller.patient;
 
 import com.example.exception.ResourceNotFoundException;
+import com.example.model.dto.patient.response.PatientFullInformationForUpdatePatientResponse;
 import com.example.model.dto.patient.response.PatientShortInfoResponse;
 import com.example.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -23,12 +24,24 @@ public class UserPatientRoleController {
         this.userService = userService;
     }
 
-    @Operation(summary = "Получить свои данные пациента")
+    @Operation(summary = "Получить свои данные пациента в виде краткой информации")
     @SecurityRequirement(name = "bearer-jwt")
-    @GetMapping("/me/{username}")
-    public ResponseEntity<PatientShortInfoResponse> getPatientByUsername(@PathVariable String username) {
+    @GetMapping("/me/information/short/{username}")
+    public ResponseEntity<PatientShortInfoResponse> getShortInfoPatientByUsername(@PathVariable String username) {
         try {
-            return ResponseEntity.ok(userService.findPatientByUsername(username));
+            return ResponseEntity.ok(userService.findPatientShortInfoByUsername(username));
+        } catch (ResourceNotFoundException e) {
+            log.error(e.getMessage());
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @Operation(summary = "Получить свои данные пациента в виде полной информации")
+    @SecurityRequirement(name = "bearer-jwt")
+    @GetMapping("/me/information/full/{username}")
+    public ResponseEntity<PatientFullInformationForUpdatePatientResponse> getFullInfoPatientByUsername(@PathVariable String username) {
+        try {
+            return ResponseEntity.ok(userService.findPatientFullInformationByUsername(username));
         } catch (ResourceNotFoundException e) {
             log.error(e.getMessage());
             return ResponseEntity.notFound().build();

@@ -13,13 +13,13 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
     UserEntity findByEmail(String email);
 
+    List<UserEntity> findAllByEnabled(Boolean enabled);
+
     List<UserEntity> findAllByRoleName(RoleEnum roleName);
 
-    List<UserEntity> findAllByOrderByUsernameAsc();
-    List<UserEntity> findAllByOrderByUsernameDesc();
+    List<UserEntity> findAllByOrderByUsername();
 
-    List<UserEntity> findAllByOrderByEmailAsc();
-    List<UserEntity> findAllByOrderByEmailDesc();
+    List<UserEntity> findAllByOrderByEmail();
 
     List<UserEntity> findAllByUsernameContaining(String username);
 
