@@ -3,6 +3,7 @@ package com.example.service;
 import com.example.exception.AccessDeniedException;
 import com.example.exception.ResourceNotFoundException;
 import com.example.model.dto.doctor.response.DoctorShortInfoResponse;
+import com.example.model.dto.patient.response.PatientFullInformationForUpdatePatientResponse;
 import com.example.model.dto.patient.response.PatientShortInfoResponse;
 import com.example.model.dto.user.request.CreateUserRequest;
 import com.example.model.dto.doctor.response.DoctorFullInformationResponse;
@@ -59,6 +60,13 @@ public class UserService {
     }
 
     @Transactional(readOnly = true, isolation = Isolation.READ_COMMITTED)
+    public List<UserResponse> findAllByEnabled(Boolean enabled) {
+        return userRepository.findAllByEnabled(enabled).stream()
+                .map(UserResponse::fromEntity)
+                .toList();
+    }
+
+    @Transactional(readOnly = true, isolation = Isolation.READ_COMMITTED)
     public List<UserResponse> findAllByRoleName(RoleEnum roleName) {
         return userRepository.findAllByRoleName(roleName).stream()
                 .map(UserResponse::fromEntity)
@@ -66,29 +74,15 @@ public class UserService {
     }
 
     @Transactional(readOnly = true, isolation = Isolation.READ_COMMITTED)
-    public List<UserResponse> findAllByOrderByUsernameAsc() {
-        return userRepository.findAllByOrderByUsernameAsc().stream()
+    public List<UserResponse> findAllByOrderByUsername() {
+        return userRepository.findAllByOrderByUsername().stream()
                 .map(UserResponse::fromEntity)
                 .toList();
     }
 
     @Transactional(readOnly = true, isolation = Isolation.READ_COMMITTED)
-    public List<UserResponse> findAllByOrderByUsernameDesc() {
-        return userRepository.findAllByOrderByUsernameDesc().stream()
-                .map(UserResponse::fromEntity)
-                .toList();
-    }
-
-    @Transactional(readOnly = true, isolation = Isolation.READ_COMMITTED)
-    public List<UserResponse> findAllByOrderByEmailAsc() {
-        return userRepository.findAllByOrderByEmailAsc().stream()
-                .map(UserResponse::fromEntity)
-                .toList();
-    }
-
-    @Transactional(readOnly = true, isolation = Isolation.READ_COMMITTED)
-    public List<UserResponse> findAllByOrderByEmailDesc() {
-        return userRepository.findAllByOrderByEmailDesc().stream()
+    public List<UserResponse> findAllByOrderByEmail() {
+        return userRepository.findAllByOrderByEmail().stream()
                 .map(UserResponse::fromEntity)
                 .toList();
     }
@@ -117,11 +111,8 @@ public class UserService {
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public UserResponse save(CreateUserRequest request) {
         checkData(request.getUsername(), request.getEmail());
-        RoleEntity roleEntity = roleRepository.findByName(request.getRole());
-        if (roleEntity == null) {
-            log.error("Роли '{}' нету в базе данных", request.getRole());
-            throw new ResourceNotFoundException("Role", "role", request.getRole());
-        }
+        RoleEntity roleEntity = roleRepository.findByName(request.getRole())
+                .orElseThrow(() -> new ResourceNotFoundException("Role", "name", request.getRole()));
         UserEntity entity = CreateUserRequest.toEntity(request, roleEntity);
         UserEntity saved = userRepository.save(entity);
         log.info("Пользователь сохранен успешно: username='{}', id={}", saved.getUsername(), saved.getId());
@@ -135,11 +126,8 @@ public class UserService {
         UserEntity entity = RegisterRequest.toEntity(request);
         entity.setPassword(passwordEncoder.encode(request.getPassword()));
 
-        RoleEntity userRole = roleRepository.findByName(RoleEnum.PATIENT);
-        if(userRole == null) {
-            log.error("Роли 'PATIENT' нету в базе данных");
-            throw new ResourceNotFoundException("User", "role", "PATIENT");
-        }
+        RoleEntity userRole = roleRepository.findByName(RoleEnum.PATIENT)
+                .orElseThrow(() -> new ResourceNotFoundException("Role", "name", RoleEnum.PATIENT));
         entity.setRole(userRole);
 
         UserEntity saved = userRepository.save(entity);
@@ -168,6 +156,19 @@ public class UserService {
         entity.setEnabled(!entity.isEnabled());
         UserEntity saved = userRepository.save(entity);
         log.info("У пользователя с ID: {} статус активности обновлен на: {}", id, saved.isEnabled());
+        return UserResponse.fromEntity(saved);
+    }
+
+    @Transactional(isolation = Isolation.READ_COMMITTED)
+    public UserResponse updateRole(long id, RoleEnum role) {
+        log.info("Обновление роли у пользователя с ID: {}", id);
+        UserEntity entity = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", id));
+        RoleEntity roleEntity = roleRepository.findByName(role)
+                .orElseThrow(() -> new ResourceNotFoundException("Role", "role", role));
+        entity.setRole(roleEntity);
+        UserEntity saved = userRepository.save(entity);
+        log.info("У пользователя с ID: {} роль обновлена на: {}",  id, saved.getRole().getName());
         return UserResponse.fromEntity(saved);
     }
 
@@ -201,7 +202,7 @@ public class UserService {
         return fullInfo;
     }
 
-    public DoctorShortInfoResponse findDoctorByUsername(String username) {
+    public DoctorShortInfoResponse findDoctorShortInfoByUsername(String username) {
         UserEntity userEntity = CheckUsernameOwnership(username);
         DoctorEntity doctorEntity = doctorRepository.findByUser_Id(userEntity.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Doctor", "ID", userEntity.getId()));
@@ -209,12 +210,28 @@ public class UserService {
         return DoctorShortInfoResponse.fromEntity(doctorEntity);
     }
 
-    public PatientShortInfoResponse findPatientByUsername(String username) {
+    public DoctorFullInformationResponse findDoctorFullInfoByUsername(String username) {
+        UserEntity userEntity = CheckUsernameOwnership(username);
+        DoctorEntity doctorEntity = doctorRepository.findByUser_Id(userEntity.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Doctor", "ID", userEntity.getId()));
+
+        return DoctorFullInformationResponse.fromEntity(doctorEntity);
+    }
+
+    public PatientShortInfoResponse findPatientShortInfoByUsername(String username) {
         UserEntity userEntity = CheckUsernameOwnership(username);
         PatientEntity patientEntity = patientRepository.findByUserId(userEntity.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Patient", "ID", userEntity.getId()));
 
         return PatientShortInfoResponse.fromEntity(patientEntity);
+    }
+
+    public PatientFullInformationForUpdatePatientResponse findPatientFullInformationByUsername(String username) {
+        UserEntity userEntity = CheckUsernameOwnership(username);
+        PatientEntity patientEntity = patientRepository.findByUserId(userEntity.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Patient", "ID", userEntity.getId()));
+
+        return PatientFullInformationForUpdatePatientResponse.fromEntity(patientEntity);
     }
 
     public UserResponse findByUsername(String username) {

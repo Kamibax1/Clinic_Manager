@@ -2,11 +2,13 @@ package com.example.model.dto.security;
 
 import com.example.model.entity.UserEntity;
 import com.example.model.enums.RoleEnum;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
 public class UserResponse {
     @Getter @Setter
+    @JsonProperty("id_user")
     private Long id;
 
     @Getter @Setter
