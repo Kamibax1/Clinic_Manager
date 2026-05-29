@@ -79,11 +79,11 @@ public class DoctorService {
         DoctorEntity doctor = doctorRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Doctor", id));
         Long userId = doctor.getUser().getId();
-        if (!doctorRepository.existsById(userId)) {
-            throw new ResourceNotFoundException("User", id);
+        if (!userRepository.existsById(userId)) {
+            throw new ResourceNotFoundException("User", userId);
         }
         userRepository.deleteById(userId);
-        log.info("Пользователь с ID: {} успешно удален", id);
+        log.info("Пользователь с ID: {} успешно удален", userId);
     }
 
     public boolean existsById(long id) {

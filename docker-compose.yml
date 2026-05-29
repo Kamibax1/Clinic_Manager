@@ -1,45 +1,53 @@
 version: '3.8'
 
 services:
-  db:
-    image: postgres:15
-    container_name: clinic-db
-    environment:
-      - POSTGRES_DB=clinic_manager
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=3fc7c6434c596014
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    ports:
+      - "9090:9090"
     volumes:
-      - postgres-data:/var/lib/postgresql/data
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+    networks:
+      - monitoring
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - grafana_data:/var/lib/grafana
+    networks:
+      - monitoring
+    depends_on:
+      - prometheus
+
+  postgres:
+    image: postgres:15
+    container_name: clinic_postgres
     ports:
       - "5432:5432"
-    restart: unless-stopped
-    networks:
-      - clinic-network
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
-  app:
-    build: .
-    container_name: clinic-app
-    ports:
-      - "8081:8081"
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/clinic_manager
-      - SPRING_DATASOURCE_USERNAME=postgres
-      - SPRING_DATASOURCE_PASSWORD=3fc7c6434c596014
+      POSTGRES_DB: clinic_manager
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 3fc7c6434c596014
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
     networks:
-      - clinic-network
-    depends_on:
-      db:
-        condition: service_healthy
-    restart: unless-stopped
+      - monitoring
 
 networks:
-  clinic-network:
+  monitoring:
     driver: bridge
 
 volumes:
-  postgres-data:
+  prometheus_data:
+  grafana_data:
+  postgres_data:

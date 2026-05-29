@@ -114,6 +114,7 @@ public class UserService {
         RoleEntity roleEntity = roleRepository.findByName(request.getRole())
                 .orElseThrow(() -> new ResourceNotFoundException("Role", "name", request.getRole()));
         UserEntity entity = CreateUserRequest.toEntity(request, roleEntity);
+        entity.setPassword(passwordEncoder.encode(entity.getPassword()));
         UserEntity saved = userRepository.save(entity);
         log.info("Пользователь сохранен успешно: username='{}', id={}", saved.getUsername(), saved.getId());
         return UserResponse.fromEntity(saved);
@@ -185,6 +186,7 @@ public class UserService {
         return findRoleUser(userEntity, fullInfo);
     }
 
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     private UserFullInfoResponse findRoleUser(UserEntity userEntity, UserFullInfoResponse fullInfo) {
         DoctorEntity doctorEntity = doctorRepository.findByUser_Id(userEntity.getId()).orElse(null);
         if (doctorEntity != null) {
@@ -202,6 +204,7 @@ public class UserService {
         return fullInfo;
     }
 
+    @Transactional(readOnly = true ,isolation = Isolation.READ_COMMITTED)
     public DoctorShortInfoResponse findDoctorShortInfoByUsername(String username) {
         UserEntity userEntity = CheckUsernameOwnership(username);
         DoctorEntity doctorEntity = doctorRepository.findByUser_Id(userEntity.getId())
@@ -210,6 +213,7 @@ public class UserService {
         return DoctorShortInfoResponse.fromEntity(doctorEntity);
     }
 
+    @Transactional(readOnly = true ,isolation = Isolation.READ_COMMITTED)
     public DoctorFullInformationResponse findDoctorFullInfoByUsername(String username) {
         UserEntity userEntity = CheckUsernameOwnership(username);
         DoctorEntity doctorEntity = doctorRepository.findByUser_Id(userEntity.getId())
@@ -218,6 +222,7 @@ public class UserService {
         return DoctorFullInformationResponse.fromEntity(doctorEntity);
     }
 
+    @Transactional(readOnly = true ,isolation = Isolation.READ_COMMITTED)
     public PatientShortInfoResponse findPatientShortInfoByUsername(String username) {
         UserEntity userEntity = CheckUsernameOwnership(username);
         PatientEntity patientEntity = patientRepository.findByUserId(userEntity.getId())
@@ -226,6 +231,7 @@ public class UserService {
         return PatientShortInfoResponse.fromEntity(patientEntity);
     }
 
+    @Transactional(readOnly = true ,isolation = Isolation.READ_COMMITTED)
     public PatientFullInformationForUpdatePatientResponse findPatientFullInformationByUsername(String username) {
         UserEntity userEntity = CheckUsernameOwnership(username);
         PatientEntity patientEntity = patientRepository.findByUserId(userEntity.getId())
@@ -234,12 +240,25 @@ public class UserService {
         return PatientFullInformationForUpdatePatientResponse.fromEntity(patientEntity);
     }
 
+    @Transactional(readOnly = true ,isolation = Isolation.READ_COMMITTED)
     public UserResponse findByUsername(String username) {
         UserEntity userEntity = userRepository.findByUsername(username);
         if(userEntity == null) {
             throw new ResourceNotFoundException("User", "username", username);
         }
         return UserResponse.fromEntity(userEntity);
+    }
+
+    @Transactional(isolation = Isolation.READ_COMMITTED)
+    public void deleteById(long id) {
+        DoctorEntity doctor = doctorRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Doctor", id));
+        Long userId = doctor.getUser().getId();
+        if (!userRepository.existsById(userId)) {
+            throw new ResourceNotFoundException("User", userId);
+        }
+        userRepository.deleteById(userId);
+        log.info("Пользователь с ID: {} успешно удален", userId);
     }
 
     public boolean checkPassword(String rawPassword, String encodedPassword) {

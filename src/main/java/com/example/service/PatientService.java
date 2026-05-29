@@ -66,11 +66,11 @@ public class PatientService {
         PatientEntity patient = patientRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Patient", id));
         Long userId = patient.getUser().getId();
-        if (!existsById(userId)) {
-            throw new ResourceNotFoundException("User", id);
+        if (!userRepository.existsById(userId)) {
+            throw new ResourceNotFoundException("User", userId);
         }
         userRepository.deleteById(userId);
-        log.info("Пользователь с ID: {} успешно удален", id);
+        log.info("Пользователь с ID: {} успешно удален", userId);
     }
 
     public boolean existsById(long id) {
